@@ -1,36 +1,55 @@
 {
-    "name": "elixirlinter",
-    "displayName": "ElixirLinter",
-    "description": "Elixir linter using Credo",
-    "version": "0.0.1",
-    "publisher": "iampeterbanjo",
-    "engines": {
-        "vscode": "^1.5.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.sayHello"
-    ],
-    "main": "./out/src/extension",
-    "contributes": {
-        "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
-        }]
-    },
-    "scripts": {
-        "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
-        "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
-    }
+  "name": "elixirlinter",
+  "displayName": "ElixirLinter",
+  "description": "Elixir linter using Credo",
+  "version": "0.0.1",
+  "publisher": "iampeterbanjo",
+  "engines": {
+    "vscode": "^1.5.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:elixir"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "elixir",
+        "aliases": [
+          "Elixir",
+          "elixir"
+        ],
+        "extensions": [
+          ".ex",
+          ".exs"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test:vscode": "node ./node_modules/vscode/bin/test",
+    "test": "tsc && mocha 'out/src/*_spec.js'",
+    "test:watch": "mocha 'out/src/*_spec.js' --watch",
+    "dev": "parallelshell 'npm run compile' 'npm run test --watch'"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.40",
+    "mocha": "^3.2.0",
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0"
+  },
+  "dependencies": {
+    "global": "^4.3.1",
+    "parallelshell": "^2.0.0",
+    "testem": "^1.15.0",
+    "yarn": "^0.20.3"
+  },
+  "license": "MIT"
 }
