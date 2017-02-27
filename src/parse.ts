@@ -1,3 +1,3 @@
-export let lines = (output): string[] => {
-  return ["1","2","3"];
+export let getLines = (output): string[] => {
+  return output.split('\n');
 }
