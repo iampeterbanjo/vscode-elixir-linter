@@ -16,7 +16,7 @@ describe('command', () => {
       assert.equal(options.cwd, vscode.workspace.rootPath);
     });
 
-    it('cwd is undefined', t => {
+    it('cwd is undefined', () => {
       let vscode = {
           workspace: {
             rootPath: false
