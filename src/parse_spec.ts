@@ -24,4 +24,17 @@ describe('parse', () => {
       assert.equal(result.length, 5);
     });
   });
+
+  describe('.getColumn', () => {
+    it('should get expected line column', () => {
+      [
+        {line: 'nothing to see here', expected: undefined},
+        {line: '[R] → lib/rumbl.ex:27:7 Functions should have a @spec type specification.', expected: 7},
+        {line: '[R] → lib/rumbl.ex:1:11 Modules should have a @moduledoc tag.', expected: 11},
+        {line: '[R] → lib/rumbl.ex:6:1 Functions should have a @spec type specification.', expected: 1}
+      ].forEach(t => {
+        assert.equal(parse.getColumn(t.line), t.expected);
+      });
+    });
+  });
 });
