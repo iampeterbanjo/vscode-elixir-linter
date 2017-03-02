@@ -6,6 +6,7 @@ import ChildProcess = cp.ChildProcess;
 
 import * as vscode from 'vscode';
 import * as cmd from './command';
+import * as parse from './parse';
 
 export default class ElixirLintingProvider {
 
@@ -14,38 +15,38 @@ export default class ElixirLintingProvider {
     // getDiagnosis for vscode.diagnostics
     public getDiagnosis(item):vscode.Diagnostic {
         let range = new vscode.Range(
-            item.startLine - 1,
-            item.startColumn - 1,
-            item.endLine - 1,
-            item.endColumn - 1
+            item.startLine,
+            item.startColumn,
+            item.endLine,
+            item.endColumn
         );
         return new vscode.Diagnostic(range, item.message, item.severity);
     }
 
-    public parseOutput(output): vscode.Diagnostic[] {
-        return output.split('\n').map(error => {
-            let matches = error.match(/^.*?:(\d+):?(\d+)?:\s(.*)/);
+    public parseOutput(output) {
+        let self = this;
 
-            if (!matches || !matches[1]) {
-                return null;
+        return parse.getLines(output).map(error => {
+            // let matches = error.match(/^.*?:(\d+):?(\d+)?:\s(.*)/);
+            let lineInfo = parse.getLineInfo(error);
+
+            if (!lineInfo) {
+                return;
             }
 
-            let startLine = parseInt(matches[1]),
-                startColumn = parseInt(matches[2]),
+            let startLine = lineInfo.position,
+                startColumn = lineInfo.column,
                 endLine = isNaN(startColumn) ? 0 : startColumn,
                 endColumn = isNaN(startColumn) ? Number.MAX_VALUE : startColumn,
-                // range = {
-                //     start: { line, character: isNaN(col) ? 0 : col },
-                //     end: { line, character: isNaN(col) ? Number.MAX_VALUE : col }
-                // },
-                message = matches[3];
+                message = lineInfo.message;
 
             return {
                 startLine: startLine,
                 startColumn: startColumn,
                 endLine: endLine,
                 endColumn: endColumn,
-                severity: vscode.DiagnosticSeverity.Warning
+                severity: vscode.DiagnosticSeverity.Warning,
+                message: message
             };
         });
     }
@@ -64,7 +65,7 @@ export default class ElixirLintingProvider {
         let decoded = ''
         let diagnostics: vscode.Diagnostic[] = [];
 
-        let args =  ['credo', textDocument.fileName];
+        let args =  ['credo', 'list', '--format=oneline', textDocument.fileName];
 
         let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
         if (childProcess.pid) {

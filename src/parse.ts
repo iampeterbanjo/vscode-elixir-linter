@@ -1,13 +1,23 @@
+import * as vscode from 'vscode';
+
 interface LineInfo {
   column?: number,
-  position?: number
+  position?: number,
+  message?: string
 }
 
 export let getLines = (output): string[] => {
+  if (!output) {
+    return [];
+  }
   return output.split('\n');
 }
 
 export let getLineInfo = (line): LineInfo => {
+  if (!line) {
+    return;
+  }
+
   let info: any = {},
       sections: string[] = line.split(':'),
       positionSection = sections[1],
@@ -20,6 +30,13 @@ export let getLineInfo = (line): LineInfo => {
   if (columnSection) {
     info.column = +/\d+/.exec(columnSection)[0];
   }
+  if (positionSection && columnSection) {
+    info.message = columnSection.slice(columnSection.indexOf(' ')).trim();
+  }
 
   return info;
+}
+
+export let getDiagnosticInfo = (lineInfo): any => {
+  return;
 }
