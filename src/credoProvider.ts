@@ -24,30 +24,10 @@ export default class ElixirLintingProvider {
     }
 
     public parseOutput(output) {
-        let self = this;
-
         return parse.getLines(output).map(error => {
-            // let matches = error.match(/^.*?:(\d+):?(\d+)?:\s(.*)/);
             let lineInfo = parse.getLineInfo(error);
 
-            if (!lineInfo) {
-                return;
-            }
-
-            let startLine = lineInfo.position,
-                startColumn = lineInfo.column,
-                endLine = isNaN(startColumn) ? 0 : startColumn,
-                endColumn = isNaN(startColumn) ? Number.MAX_VALUE : startColumn,
-                message = lineInfo.message;
-
-            return {
-                startLine: startLine,
-                endLine: endLine,
-                startColumn: startColumn,
-                endColumn: endColumn,
-                severity: vscode.DiagnosticSeverity.Warning,
-                message: message
-            };
+            return parse.getDiagnosticInfo(lineInfo);
         });
     }
 
