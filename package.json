@@ -51,5 +51,9 @@
     "testem": "^1.15.0",
     "yarn": "^0.20.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository":{
+    "type": "github",
+    "url": "https://github.com/iampeterbanjo/vscode-elixir-linter"
+  }
 }
