@@ -7,7 +7,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 * Error warning indicator under text
 * Tooltips with lint message
 
-\!\[feature tooltips\]\(images/elixirlinter-screenshot-tooltips.png\)
+![feature tooltips](images/elixirlinter-screenshot-tooltips.png)
 
 ## Requirements
 
@@ -31,6 +31,7 @@ Contributions welcome - please raise an issue or open a pull request
 
 * Getting started: `npm install` then `npm run dev`
 * Tests: `npm test` or `npm run test:watch`
+
 ## Credits
 
 * [vscode-credo](https://github.com/joshjg/vscode-credo)
