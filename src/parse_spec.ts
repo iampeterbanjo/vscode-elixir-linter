@@ -59,11 +59,39 @@ describe('parse', () => {
     });
 
     it('should be undefined if position is falsy', () => {
-      assert.equal(parse.getDiagnosticInfo({column: 2}), undefined);
+      [
+        {column: 3, position:  0},
+        {column: 66, position: undefined},
+        {column: 34, position: null},
+        {column: 2, position:  false},
+        {column: 21, position: ''}
+      ].forEach(t => {
+        assert.equal(parse.getDiagnosticInfo(t), undefined);
+      });
     });
 
     it('should be undefined if column is falsy', () => {
-      assert.equal(parse.getDiagnosticInfo({position: 5}), undefined);
+      [
+        {position: 5, column: 0},
+        {position: 6, column: undefined},
+        {position: 90, column: null},
+        {position: 25, column: false},
+        {position: 65, column: ''}
+      ].forEach(t => {
+        assert.equal(parse.getDiagnosticInfo(t), undefined);
+      });
+    });
+
+    it('should be undefined if column is less than 1', () => {
+      assert.equal(parse.getDiagnosticInfo({column: -1}), undefined);
+    });
+
+    it('should be undefined if position is less than 1', () => {
+      assert.equal(parse.getDiagnosticInfo({position: -20}), undefined);
+    });
+
+    it('should NOT be undefined if column and position are 1', () => {
+      assert.ok(parse.getDiagnosticInfo({column: 1, position: 1}) !== undefined);
     });
 
     it('should result in startLine <= endLine', () => {
@@ -74,6 +102,17 @@ describe('parse', () => {
         ].forEach(t => {
           let result = parse.getDiagnosticInfo(t);
           assert.ok(result.startLine <=  result.endLine, `when column ${t.column} and position ${t.position}`);
+        });
+    });
+
+    it('should result in startColumn <= endColumn', () => {
+        [
+          { column: 1, position: 1 },
+          { column: 20, position: 5 },
+          { column: 12, position: 101 }
+        ].forEach(t => {
+          let result = parse.getDiagnosticInfo(t);
+          assert.ok(result.startColumn <=  result.endColumn, `when column ${t.column} and position ${t.position}`);
         });
     });
   });

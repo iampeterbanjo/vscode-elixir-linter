@@ -38,12 +38,21 @@ export let getLineInfo = (line): LineInfo => {
 }
 
 export let getDiagnosticInfo = (lineInfo): any => {
-  if (!lineInfo || !lineInfo.position || !lineInfo.column) {
+  if (!lineInfo) {
+    return;
+  }
+
+  let isNotAnumber = isNaN(parseInt(lineInfo.position)) || isNaN(parseInt(lineInfo.column)),
+      isLessThanOrEqualToZero = lineInfo.position <= 0 || lineInfo.column <= 0
+
+  if (isNotAnumber || isLessThanOrEqualToZero) {
     return;
   }
 
   return {
     startLine: lineInfo.position,
-    endLine: lineInfo.position
+    endLine: lineInfo.position,
+    startColumn: lineInfo.column,
+    endColumn: lineInfo.column,
   }
 }
