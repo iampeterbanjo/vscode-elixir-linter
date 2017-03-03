@@ -115,5 +115,19 @@ describe('parse', () => {
           assert.ok(result.startColumn <=  result.endColumn, `when column ${t.column} and position ${t.position}`);
         });
     });
+
+    it('should have the expected message', () => {
+      [
+        {column: 1, position: 1, message: 'We are number 1'},
+        {column: 12, position: 31, message: 0},
+        {column: 13, position: 31, message: 'Unlucky !@#$%^&*()'}
+      ].forEach(t => {
+        assert.equal(parse.getDiagnosticInfo(t).message, t.message);
+      });
+    })
+
+    it('should have severity of vscode.DiagnosticSeverity.Warning', () => {
+      assert.equal(parse.getDiagnosticInfo({column: 42, position: 24}).severity, 1);
+    });
   });
 });

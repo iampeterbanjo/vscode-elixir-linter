@@ -1,5 +1,3 @@
-import * as vscode from 'vscode';
-
 interface LineInfo {
   column?: number,
   position?: number,
@@ -54,5 +52,7 @@ export let getDiagnosticInfo = (lineInfo): any => {
     endLine: lineInfo.position,
     startColumn: lineInfo.column,
     endColumn: lineInfo.column,
+    message: lineInfo.message,
+    severity: 1
   }
 }
