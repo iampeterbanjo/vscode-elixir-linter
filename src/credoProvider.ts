@@ -42,8 +42,8 @@ export default class ElixirLintingProvider {
 
             return {
                 startLine: startLine,
-                startColumn: startColumn,
                 endLine: endLine,
+                startColumn: startColumn,
                 endColumn: endColumn,
                 severity: vscode.DiagnosticSeverity.Warning,
                 message: message

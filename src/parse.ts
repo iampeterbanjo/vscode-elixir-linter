@@ -38,5 +38,12 @@ export let getLineInfo = (line): LineInfo => {
 }
 
 export let getDiagnosticInfo = (lineInfo): any => {
-  return;
+  if (!lineInfo || !lineInfo.position || !lineInfo.column) {
+    return;
+  }
+
+  return {
+    startLine: lineInfo.position,
+    endLine: lineInfo.position
+  }
 }

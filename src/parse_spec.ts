@@ -58,12 +58,23 @@ describe('parse', () => {
       assert.equal(parse.getDiagnosticInfo(null), undefined);
     });
 
-    it('should be undefined if column is undefined', () => {
-      assert.equal(parse.getDiagnosticInfo({position: 2}), undefined);
+    it('should be undefined if position is falsy', () => {
+      assert.equal(parse.getDiagnosticInfo({column: 2}), undefined);
     });
 
-    it('should be undefined if position is undefined', () => {
-      assert.equal(parse.getDiagnosticInfo({column: 2}), undefined);
+    it('should be undefined if column is falsy', () => {
+      assert.equal(parse.getDiagnosticInfo({position: 5}), undefined);
+    });
+
+    it('should result in startLine <= endLine', () => {
+        [
+          { column: 1, position: 1 },
+          { column: 20, position: 5 },
+          { column: 12, position: 101 }
+        ].forEach(t => {
+          let result = parse.getDiagnosticInfo(t);
+          assert.ok(result.startLine <=  result.endLine, `when column ${t.column} and position ${t.position}`);
+        });
     });
   });
 });
