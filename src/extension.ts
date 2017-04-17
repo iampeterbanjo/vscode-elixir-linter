@@ -11,5 +11,4 @@ import ElixirLintingProvider from './credoProvider';
 export function activate(context: vscode.ExtensionContext) {
     let linter = new ElixirLintingProvider();
     linter.activate(context.subscriptions);
-    vscode.languages.registerCodeActionsProvider('elixir', linter);
 }

@@ -2,6 +2,8 @@
 
 Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo) for [Visual Studio Code](https://code.visualstudio.com/)
 
+[ ![Codeship Status for iampeterbanjo/vscode-elixir-linter](https://app.codeship.com/projects/cb7e5c40-05b9-0135-edfd-52b395dcacd9/status?branch=master)](https://app.codeship.com/projects/213602)
+
 ## Features
 
 * Error warning indicator under text
