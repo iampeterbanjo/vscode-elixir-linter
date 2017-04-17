@@ -18,12 +18,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 ## Extension Settings
 
 None
-## Release Notes
-
-### 0.1.0
-
-* Initial release
-* Error warnings and tooltips
+## [Changelog](CHANGELOG.md)
 
 ## Contributing
 
