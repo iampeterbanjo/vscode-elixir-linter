@@ -65,52 +65,12 @@ export default class ElixirLintingProvider {
     }
 
     /**
-     *
-     The code below illustrates how to add code actions to the ElixirLintingProvider class shown above.
-     */
-
-    private static commandId: string = 'elixir.linter.runCodeAction';
-
-    /**
-     provideCodeActions() receives the diagnostics as a member of CodeActionContext and returns an array with a single command.
-     */
-
-    public provideCodeActions(document: vscode.TextDocument, range: vscode.Range, context: vscode.CodeActionContext, token: vscode.CancellationToken): vscode.Command[] {
-        let diagnostic:vscode.Diagnostic = context.diagnostics[0];
-        return [{
-            title: "Accept linter suggestions",
-            command: ElixirLintingProvider.commandId,
-            arguments: [document, diagnostic.range, diagnostic.message]
-        }];
-    }
-
-    /**
-     runCodeAction() is the function that we want to trigger if a user selects our action. Using the arguments passed along with the command it uses a WorkspaceEdit to fix a users code according to the suggestions of the linter.
-     */
-
-    private runCodeAction(document: vscode.TextDocument, range: vscode.Range, message:string): any {
-        let fromRegex:RegExp = /.*Replace:(.*)==>.*/g
-        let fromMatch:RegExpExecArray = fromRegex.exec(message.replace(/\s/g, ''));
-        let from = fromMatch[1];
-        let to:string = document.getText(range).replace(/\s/g, '')
-        if (from === to) {
-            let newText = /.*==>\s(.*)/g.exec(message)[1]
-            let edit = new vscode.WorkspaceEdit();
-            edit.replace(document.uri, range, newText);
-            return vscode.workspace.applyEdit(edit);
-        } else {
-            vscode.window.showErrorMessage("The suggestion was not applied because it is out of date. You might have tried to apply the same edit twice.");
-        }
-    }
-
-    /**
      activate() and dispose() deal with set-up and tear-down in VS Code extensions. The code below registers the command so that the CodeActionProvider can call it and sets up listeners to trigger the linting action.
      */
 
     private command: vscode.Disposable;
 
     public activate(subscriptions: vscode.Disposable[]) {
-        this.command = vscode.commands.registerCommand(ElixirLintingProvider.commandId, this.runCodeAction, this);
         subscriptions.push(this);
         this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
 
