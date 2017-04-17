@@ -130,4 +130,23 @@ describe('parse', () => {
       assert.equal(parse.getDiagnosticInfo({column: 42, position: 24}).severity, 1);
     });
   });
+
+  describe('.makeZeroIndex', () => {
+    it('should return 0 when value is less than 0', () => {
+      assert.equal(parse.makeZeroIndex(0), 0);
+    });
+
+    it('should decrement value by 1 when value is greater than 0', () => {
+      [
+        {value: 0, expected: 0},
+        {value: -1, expected: 0},
+        {value: -31, expected: 0},
+        {value: 2, expected: 1},
+        {value: 5, expected: 4},
+        {value: 700, expected: 699},
+      ].forEach((t) => {
+        assert.equal(parse.makeZeroIndex(t.value), t.expected);
+      });
+    });
+  })
 });

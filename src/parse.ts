@@ -48,11 +48,19 @@ export let getDiagnosticInfo = (lineInfo): any => {
   }
 
   return {
-    startLine: lineInfo.position,
-    endLine: lineInfo.position,
-    startColumn: lineInfo.column,
-    endColumn: lineInfo.column,
+    startLine: makeZeroIndex(lineInfo.position),
+    endLine: makeZeroIndex(lineInfo.position),
+    startColumn: 0,
+    endColumn: makeZeroIndex(lineInfo.column),
     message: lineInfo.message,
     severity: 1
   }
+}
+
+export let makeZeroIndex = (value: number): number => {
+  if (value <= 0) {
+    return 0;
+  }
+
+  return value - 1;
 }
