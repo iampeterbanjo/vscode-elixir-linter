@@ -2,7 +2,7 @@
   "name": "elixirlinter",
   "displayName": "ElixirLinter",
   "description": "Elixir linter using Credo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "iampeterbanjo",
   "engines": {
     "vscode": "^1.5.0"
@@ -36,6 +36,7 @@
     "test:vscode": "node ./node_modules/vscode/bin/test",
     "test": "tsc && mocha 'out/src/*_spec.js'",
     "test:watch": "parallelshell 'mocha 'out/src/*_spec.js' --watch'",
+    "release": "parallelshell 'vsce package' 'vsce publish'",
     "dev": "parallelshell 'npm run compile' 'mocha 'out/src/*_spec.js' --watch'"
   },
   "devDependencies": {
