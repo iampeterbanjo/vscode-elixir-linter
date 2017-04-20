@@ -45,9 +45,13 @@ export default class ElixirLintingProvider {
         let decoded = ''
         let diagnostics: vscode.Diagnostic[] = [];
 
-        let args =  ['credo', 'list', '--format=oneline', textDocument.fileName];
+        let args =  ['credo', 'list', '--format=oneline', '--read-from-stdin'];
 
+        // use stdin for credo to prevent running on entire project
         let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
+        childProcess.stdin.write(textDocument.getText());
+        childProcess.stdin.end();
+
         if (childProcess.pid) {
             childProcess.stdout.on('data', (data: Buffer) => {
                 decoded += data;
@@ -71,8 +75,8 @@ export default class ElixirLintingProvider {
     private command: vscode.Disposable;
 
     public activate(subscriptions: vscode.Disposable[]) {
-        subscriptions.push(this);
         this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
+        subscriptions.push(this);
 
         vscode.workspace.onDidOpenTextDocument(this.linter, this, subscriptions);
         vscode.workspace.onDidCloseTextDocument((textDocument)=> {
