@@ -37,13 +37,17 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test:vscode": "node ./node_modules/vscode/bin/test",
     "test": "tsc && mocha 'out/src/*_spec.js'",
-    "test:watch": "parallelshell 'mocha 'out/src/*_spec.js' --watch'",
+    "test:watch": "nodemon -e 'ts' -x 'npm run test'",
+    "pretest": "npm run clean",
+    "clean": "rm -r out/",
     "dev": "parallelshell 'npm run compile' 'mocha 'out/src/*_spec.js' --watch'"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
     "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "sinon": "^2.1.0",
     "typescript": "^2.0.3",
     "vscode": "^1.0.0"
   },
@@ -54,7 +58,7 @@
     "yarn": "^0.20.3"
   },
   "license": "MIT",
-  "repository":{
+  "repository": {
     "type": "github",
     "url": "https://github.com/iampeterbanjo/vscode-elixir-linter"
   }
