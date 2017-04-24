@@ -55,6 +55,11 @@ export default class ElixirLintingProvider {
 
         let args =  ['credo', 'list', '--format=oneline', '--read-from-stdin'];
 
+        let settings = vscode.workspace.getConfiguration('elixirLinter');
+        if (settings.useStrict) {
+            args = args.concat('--strict');
+        }
+
         // use stdin for credo to prevent running on entire project
         let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
         childProcess.stdin.write(textDocument.getText());

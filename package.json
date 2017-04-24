@@ -29,7 +29,18 @@
           ".exs"
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "ElixirLinter settings",
+      "properties": {
+        "elixirLinter.useStrict": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Use strict mode with Credo"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
