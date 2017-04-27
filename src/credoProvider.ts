@@ -86,14 +86,7 @@ export default class ElixirLintingProvider {
      */
 
     public activate(subscriptions: vscode.Disposable[]) {
-        subscriptions.push(this);
-
-        vscode.workspace.onDidOpenTextDocument(this.linter, this, subscriptions);
-        vscode.workspace.onDidCloseTextDocument((textDocument)=> {
-            this.diagnosticCollection.delete(textDocument.uri);
-        }, null, subscriptions);
-
-        vscode.workspace.onDidSaveTextDocument(this.linter, this);
+        this.extension.activate(this, subscriptions, vscode, this.linter);
 
         // Lint all open elixir documents
         vscode.workspace.textDocuments.forEach(this.linter, this);

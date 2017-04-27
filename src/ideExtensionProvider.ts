@@ -12,4 +12,16 @@ export default class IdeExtensionProvider {
     this.diagnosticCollection.dispose();
     this.command.dispose();
   }
+
+  public activate(extension, subscriptions, vscode, linter) {
+    subscriptions.push(extension);
+
+    vscode.workspace.onDidOpenTextDocument(linter, extension, subscriptions);
+    vscode.workspace.onDidSaveTextDocument(linter, extension);
+    vscode.workspace.onDidCloseTextDocument(this.removeFromDiagnosticCollection, null, subscriptions);
+  }
+
+  public removeFromDiagnosticCollection(uri) {
+    this.diagnosticCollection.delete(uri);
+  }
 }
