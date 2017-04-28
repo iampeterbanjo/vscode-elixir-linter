@@ -2,15 +2,25 @@
 
 import * as path from 'path';
 import * as cp from 'child_process';
-import ChildProcess = cp.ChildProcess;
 
 import * as vscode from 'vscode';
 import * as cmd from './command';
 import * as parse from './parse';
+import IdeExtensionProvider from './ideExtensionProvider';
 
 export default class ElixirLintingProvider {
+    private static linterCommand: string = 'mix';
+
+    private command: vscode.Disposable;
 
     private diagnosticCollection: vscode.DiagnosticCollection;
+
+    private extension: any;
+
+    constructor(diagnosticCollection: vscode.DiagnosticCollection) {
+        this.diagnosticCollection = diagnosticCollection;
+        this.extension = new IdeExtensionProvider(this.diagnosticCollection, this.command);
+    }
 
     // getDiagnosis for vscode.diagnostics
     public getDiagnosis(item):vscode.Diagnostic {
@@ -31,8 +41,6 @@ export default class ElixirLintingProvider {
         });
     }
 
-    private static linterCommand: string = 'mix';
-
     /**
      Using cp.spawn(), extensions can call any executable and process the results. The code below uses cp.spawn() to call linter, parses the output into Diagnostic objects, and then adds them to a DiagnosticCollection with this.diagnosticCollection.set(textDocument.uri, diagnostics); which add the chrome in the UI.
      */
@@ -46,6 +54,11 @@ export default class ElixirLintingProvider {
         let diagnostics: vscode.Diagnostic[] = [];
 
         let args =  ['credo', 'list', '--format=oneline', '--read-from-stdin'];
+
+        let settings = vscode.workspace.getConfiguration('elixirLinter');
+        if (settings.useStrict === true) {
+            args = args.concat('--strict');
+        }
 
         // use stdin for credo to prevent running on entire project
         let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
@@ -72,26 +85,14 @@ export default class ElixirLintingProvider {
      activate() and dispose() deal with set-up and tear-down in VS Code extensions. The code below registers the command so that the CodeActionProvider can call it and sets up listeners to trigger the linting action.
      */
 
-    private command: vscode.Disposable;
-
     public activate(subscriptions: vscode.Disposable[]) {
-        this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
-        subscriptions.push(this);
-
-        vscode.workspace.onDidOpenTextDocument(this.linter, this, subscriptions);
-        vscode.workspace.onDidCloseTextDocument((textDocument)=> {
-            this.diagnosticCollection.delete(textDocument.uri);
-        }, null, subscriptions);
-
-        vscode.workspace.onDidSaveTextDocument(this.linter, this);
+        this.extension.activate(this, subscriptions, vscode, this.linter);
 
         // Lint all open elixir documents
         vscode.workspace.textDocuments.forEach(this.linter, this);
     }
 
     public dispose(): void {
-        this.diagnosticCollection.clear();
-        this.diagnosticCollection.dispose();
-        this.command.dispose();
+        this.extension.dispose();
     }
 }

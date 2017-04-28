@@ -10,7 +10,10 @@
         "rootDir": "."
     },
     "exclude": [
-        "node_modules",
         ".vscode-test"
+    ],
+    "include": [
+        "src/**/*",
+        "test/**/*"
     ]
 }

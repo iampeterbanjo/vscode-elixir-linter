@@ -2,7 +2,7 @@
   "name": "elixirlinter",
   "displayName": "ElixirLinter",
   "description": "Elixir linter using Credo",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "publisher": "iampeterbanjo",
   "engines": {
     "vscode": "^1.5.0"
@@ -11,6 +11,7 @@
     "Languages",
     "Linters"
   ],
+  "icon": "images/icon.png",
   "activationEvents": [
     "onLanguage:elixir"
   ],
@@ -28,7 +29,18 @@
           ".exs"
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "ElixirLinter settings",
+      "properties": {
+        "elixirLinter.useStrict": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use strict mode with Credo"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
@@ -36,13 +48,17 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test:vscode": "node ./node_modules/vscode/bin/test",
     "test": "tsc && mocha 'out/src/*_spec.js'",
-    "test:watch": "parallelshell 'mocha 'out/src/*_spec.js' --watch'",
+    "test:watch": "nodemon -e 'ts' -x 'npm run test'",
+    "pretest": "npm run clean",
+    "clean": "test -d out/ && rm -r out/ || exit 0",
     "dev": "parallelshell 'npm run compile' 'mocha 'out/src/*_spec.js' --watch'"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
     "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "sinon": "^2.1.0",
     "typescript": "^2.0.3",
     "vscode": "^1.0.0"
   },
@@ -53,7 +69,7 @@
     "yarn": "^0.20.3"
   },
   "license": "MIT",
-  "repository":{
+  "repository": {
     "type": "github",
     "url": "https://github.com/iampeterbanjo/vscode-elixir-linter"
   }
