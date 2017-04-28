@@ -17,12 +17,10 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 
 ## Extension Settings
 
-None
+- `"elixirLinter.useStrict": [true | false]`
 ## [Changelog](CHANGELOG.md)
 
-## Contributing
-
-Contributions welcome - please raise an issue or open a pull request
+## [Contributing](CONTRIBUTING.md)
 
 ## Development
 
