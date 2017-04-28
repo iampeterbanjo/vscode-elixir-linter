@@ -24,8 +24,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 
 ## Development
 
-* Getting started: `npm install` then `npm run dev`
-* Tests: `npm test` or `npm run test:watch`
+* Getting started: `npm install` then `npm run test:watch`
 
 ## Credits
 
