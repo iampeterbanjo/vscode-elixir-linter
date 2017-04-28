@@ -21,7 +21,7 @@ export default class IdeExtensionProvider {
     vscode.workspace.onDidCloseTextDocument(this.removeFromDiagnosticCollection, null, subscriptions);
   }
 
-  public removeFromDiagnosticCollection(uri) {
+  public removeFromDiagnosticCollection = (uri):void => {
     this.diagnosticCollection.delete(uri);
   }
 }

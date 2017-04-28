@@ -56,7 +56,7 @@ export default class ElixirLintingProvider {
         let args =  ['credo', 'list', '--format=oneline', '--read-from-stdin'];
 
         let settings = vscode.workspace.getConfiguration('elixirLinter');
-        if (settings.useStrict) {
+        if (settings.useStrict === true) {
             args = args.concat('--strict');
         }
 
