@@ -9,8 +9,8 @@ describe('parse', () => {
       [
         {output: null, expected: 0},
         {output: '', expected: 0},
-        {output: 'three \n new \n lines \n', expected: 4},
-        {output: 'one liner \n', expected: 2},
+        {output: 'three \n new \n lines \n', expected: 3},
+        {output: 'one liner \n', expected: 1},
         {output: 'no new line', expected: 1}
       ].forEach(test => {
         let result = parse.getLines(test.output);
@@ -22,7 +22,7 @@ describe('parse', () => {
     it('should get correct number of lines for credo output', () => {
       let result = parse.getLines(fixtures.output.listOneline);
 
-      assert.equal(result.length, 5);
+      assert.equal(result.length, 6);
     });
   });
 

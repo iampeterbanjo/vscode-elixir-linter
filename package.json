@@ -48,7 +48,8 @@
     "preinstall": "./bin/before_install.sh",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test:vscode": "node ./node_modules/vscode/bin/test",
-    "test": "tsc && mocha 'out/src/*_spec.js' && npm run test:vscode --silent",
+    "test:typescript": "tsc && mocha 'out/src/*_spec.js'",
+    "test": "npm run test:typescript && npm run test:vscode --silent",
     "test:watch": "nodemon -e 'ts' -x 'npm run test'",
     "pretest": "npm run clean",
     "clean": "test -d out/ && rm -r out/ || exit 0"

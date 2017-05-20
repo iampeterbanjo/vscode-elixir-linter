@@ -8,7 +8,12 @@ export let getLines = (output): string[] => {
   if (!output) {
     return [];
   }
-  return output.split('\n');
+  return output.split('\n')
+    .filter((x) => {
+      if (x.length) {
+        return x;
+      }
+    });
 }
 
 export let getLineInfo = (line): LineInfo => {
