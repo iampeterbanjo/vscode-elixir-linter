@@ -1,28 +1,28 @@
-'use strict';
+"use strict";
 
-import * as cmd from './command';
-import * as assert from 'assert';
+import * as assert from "assert";
+import * as cmd from "./command";
 
-describe('command', () => {
-  describe('getOptions', () => {
-    it('cwd is rootPath', () => {
-      let vscode = {
+describe("command", () => {
+  describe("getOptions", () => {
+    it("cwd is rootPath", () => {
+      const vscode = {
           workspace: {
-            rootPath: './'
-          }
-        },
-        options = cmd.getOptions(vscode);
+            rootPath: "./",
+          },
+        };
+      const options = cmd.getOptions(vscode);
 
       assert.equal(options.cwd, vscode.workspace.rootPath);
     });
 
-    it('cwd is undefined', () => {
-      let vscode = {
+    it("cwd is undefined", () => {
+      const vscode = {
           workspace: {
-            rootPath: false
-          }
-        },
-        options = cmd.getOptions(vscode);
+            rootPath: false,
+          },
+        };
+      const options = cmd.getOptions(vscode);
       assert.equal(options.cwd, undefined);
     });
   });

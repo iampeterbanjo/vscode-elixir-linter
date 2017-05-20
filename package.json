@@ -43,17 +43,19 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "tsc -p ./",
     "clean": "test -d out/ && rm -r out/ || exit 0",
     "compile": "tsc -watch -p ./",
+    "lint": "npm run lint:src && npm run lint:test",
+    "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint:test": "tslint -c tslint.json 'test/**/*.ts' -e test/index.ts",
     "preinstall": "./bin/before_install.sh",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "pretest": "npm run clean",
-    "test": "npm run lint && npm run test:typescript && npm run test:vscode --silent",
+    "test": "npm run lint --silent && npm run test:typescript --silent && npm run test:vscode --silent",
     "test:vscode": "node ./node_modules/vscode/bin/test",
     "test:typescript": "tsc && mocha 'out/src/*_spec.js'",
     "test:watch": "nodemon -e 'ts' -x 'npm run test'",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    "vscode:prepublish": "tsc -p ./"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",

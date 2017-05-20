@@ -1,30 +1,30 @@
-interface LineInfo {
-  column?: number,
-  position?: number,
-  message?: string
+interface ILineInfo {
+  column?: number;
+  position?: number;
+  message?: string;
 }
 
 export let getLines = (output): string[] => {
   if (!output) {
     return [];
   }
-  return output.split('\n')
+  return output.split("\n")
     .filter((x) => {
       if (x.length) {
         return x;
       }
     });
-}
+};
 
-export let getLineInfo = (line): LineInfo => {
+export let getLineInfo = (line): ILineInfo => {
   if (!line) {
     return;
   }
 
-  let info: any = {},
-      sections: string[] = line.split(':'),
-      positionSection = sections[1],
-      columnSection = sections[2];
+  const info: any = {};
+  const sections: string[] = line.split(":");
+  const positionSection = sections[1];
+  const columnSection = sections[2];
 
   if (positionSection) {
     info.position = +/\d+/.exec(positionSection)[0];
@@ -34,33 +34,33 @@ export let getLineInfo = (line): LineInfo => {
     info.column = +/\d+/.exec(columnSection)[0];
   }
   if (positionSection && columnSection) {
-    info.message = columnSection.slice(columnSection.indexOf(' ')).trim();
+    info.message = columnSection.slice(columnSection.indexOf(" ")).trim();
   }
 
   return info;
-}
+};
 
-export let getDiagnosticInfo = (lineInfo): any => {
-  if (!lineInfo) {
+export let getDiagnosticInfo = (ILineInfo): any => {
+  if (!ILineInfo) {
     return;
   }
 
-  let isNotAnumber = isNaN(parseInt(lineInfo.position)) || isNaN(parseInt(lineInfo.column)),
-      isLessThanOrEqualToZero = lineInfo.position <= 0 || lineInfo.column <= 0
+  const isNotAnumber = isNaN(parseInt(ILineInfo.position, 10)) || isNaN(parseInt(ILineInfo.column, 10));
+  const isLessThanOrEqualToZero = ILineInfo.position <= 0 || ILineInfo.column <= 0;
 
   if (isNotAnumber || isLessThanOrEqualToZero) {
     return;
   }
 
   return {
-    startLine: makeZeroIndex(lineInfo.position),
-    endLine: makeZeroIndex(lineInfo.position),
+    endColumn: makeZeroIndex(ILineInfo.column),
+    endLine: makeZeroIndex(ILineInfo.position),
+    message: ILineInfo.message,
+    severity: 1,
     startColumn: 0,
-    endColumn: makeZeroIndex(lineInfo.column),
-    message: lineInfo.message,
-    severity: 1
-  }
-}
+    startLine: makeZeroIndex(ILineInfo.position),
+  };
+};
 
 export let makeZeroIndex = (value: number): number => {
   if (value <= 0) {
@@ -68,4 +68,4 @@ export let makeZeroIndex = (value: number): number => {
   }
 
   return value - 1;
-}
+};

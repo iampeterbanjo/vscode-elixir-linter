@@ -1,14 +1,15 @@
-'use strict';
+"use strict";
 
 /**
- When the extension is activated by VS Code it activates its own helper to handle the linting and then registers that helper as a code action provider.
+ * When the extension is activated by VS Code it activates its own helper to handle
+ * the linting and then registers that helper as a code action provider.
  */
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-import ElixirLintingProvider from './credoProvider';
+import ElixirLintingProvider from "./credoProvider";
 
 export function activate(context: vscode.ExtensionContext) {
-    let linter = new ElixirLintingProvider(vscode.languages.createDiagnosticCollection());
+    const linter = new ElixirLintingProvider(vscode.languages.createDiagnosticCollection());
     linter.activate(context.subscriptions);
 }
