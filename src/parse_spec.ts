@@ -28,24 +28,40 @@ describe("parse", () => {
 
   describe(".getLineInfo", () => {
     const testTree: any = [
-          {line: "nothing to see here", expected: undefined},
           {
+            check: "W",
             column: 7,
-            line: "[R] → lib/rumbl.ex:27:7 Functions should have a @spec type specification.",
+            line: "[W] → lib/rumbl.ex:27:7 Functions should have a @spec type specification.",
             message: "Functions should have a @spec type specification.",
             position: 27,
           },
           {
+            check: "Y",
             column: 11,
-            line: "[R] → lib/rumbl.ex:1:11 Modules should have a @moduledoc tag.",
+            line: "[Y] → lib/rumbl.ex:1:11 Modules should have a @moduledoc tag.",
             message: "Modules should have a @moduledoc tag.",
             position: 1,
           },
           {
+            check: "X",
             column: 10001,
-            line: "[R] → lib/rumbl.ex:6:10001 Functions should have a @spec type specification.",
+            line: "[X] → lib/rumbl.ex:6:10001 Functions should have a @spec type specification.",
             message: "Functions should have a @spec type specification.",
             position: 6,
+          },
+          {
+            check: "D",
+            column: 40,
+            line: "[D] ↓ apps/persona/test/support/model_case.ex:62:40 Nested modules could be aliased",
+            message: "Nested modules could be aliased",
+            position: 62,
+          },
+          {
+            check: "F",
+            column: undefined,
+            line: "[F] → apps/persona/test/support/model_case.ex:62 Pipe chain should start with a raw value.",
+            message: "Pipe chain should start with a raw value.",
+            position: 62,
           },
         ];
 
@@ -64,6 +80,12 @@ describe("parse", () => {
     it("should get expected message", () => {
       testTree.forEach((t) => {
         assert.equal(parse.getLineInfo(t.line).message, t.message);
+      });
+    });
+
+    it("should get expected check", () => {
+      testTree.forEach((t) => {
+        assert.equal(parse.getLineInfo(t.line).check, t.check);
       });
     });
   });

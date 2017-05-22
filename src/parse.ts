@@ -1,4 +1,5 @@
 interface ILineInfo {
+  check?: string;
   column?: number;
   position?: number;
   message?: string;
@@ -22,20 +23,25 @@ export let getLineInfo = (line): ILineInfo => {
   }
 
   const info: any = {};
-  const sections: string[] = line.split(":");
-  const positionSection = sections[1];
-  const columnSection = sections[2];
+  const fileInfo: string[] = line.split(":");
+  const lintInfo: string[] = line.split(" ");
+  const positionInfo = fileInfo[1];
+  const columnInfo = fileInfo[2];
 
-  if (positionSection) {
-    info.position = +/\d+/.exec(positionSection)[0];
+  const checkIndex = 0;
+  const fileIndex = 2;
+  const messageIndex = 3;
+
+  if (positionInfo) {
+    info.position = +/\d+/.exec(positionInfo)[0] || undefined;
   }
 
-  if (columnSection) {
-    info.column = +/\d+/.exec(columnSection)[0];
+  if (columnInfo) {
+    info.column = +/\d+/.exec(columnInfo)[0] || undefined;
   }
-  if (positionSection && columnSection) {
-    info.message = columnSection.slice(columnSection.indexOf(" ")).trim();
-  }
+
+  info.message = lintInfo.slice(messageIndex).join(" ") || undefined;
+  info.check = (lintInfo[checkIndex] || [])[1];
 
   return info;
 };
