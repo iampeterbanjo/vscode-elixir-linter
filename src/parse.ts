@@ -5,7 +5,7 @@ interface ILineInfo {
   message?: string;
 }
 
-export let getLines = (output): string[] => {
+export const getLines = (output): string[] => {
   if (!output) {
     return [];
   }
@@ -17,36 +17,59 @@ export let getLines = (output): string[] => {
     });
 };
 
-export let getLineInfo = (line): ILineInfo => {
-  if (!line) {
-    return;
-  }
-
-  const info: any = {};
-  const fileInfo: string[] = line.split(":");
-  const lintInfo: string[] = line.split(" ");
-  const positionInfo = fileInfo[1];
-  const columnInfo = fileInfo[2];
-
+export const getLineInfoCheck = (info: ILineInfo, line: string): ILineInfo => {
+  const lintInfo = line.split(" ");
   const checkIndex = 0;
-  const fileIndex = 2;
-  const messageIndex = 3;
-
-  if (positionInfo) {
-    info.position = +/\d+/.exec(positionInfo)[0] || undefined;
-  }
-
-  if (columnInfo) {
-    info.column = +/\d+/.exec(columnInfo)[0] || undefined;
-  }
-
-  info.message = lintInfo.slice(messageIndex).join(" ") || undefined;
   info.check = (lintInfo[checkIndex] || [])[1];
 
   return info;
 };
 
-export let getDiagnosticInfo = (ILineInfo): any => {
+export const getLineInfoColumn = (info: ILineInfo, line: string): ILineInfo => {
+  const fileInfo: string[] = line.split(" ")[2].split(":");
+  const column = fileInfo[2];
+
+  info.column = column ? parseInt(column, 10) : undefined;
+
+  return info;
+};
+
+export const getLineInfoMessage = (info: ILineInfo, line: string): ILineInfo => {
+  const lintInfo: string[] = line.split(" ");
+  const messageIndex = 3;
+  info.message = lintInfo.slice(messageIndex).join(" ") || undefined;
+
+  return info;
+};
+
+export const getLineInfoPosition = (info: ILineInfo, line: string): ILineInfo => {
+  const fileInfo: string[] = line.split(" ")[2].split(":");
+  const position = fileInfo[1];
+
+  info.position = position ? parseInt(position, 10) : undefined;
+
+  return info;
+};
+
+export const getLineInfo = (line): ILineInfo => {
+  if (!line) {
+    return;
+  }
+
+  const result = [{}].map((info) => {
+    return getLineInfoCheck(info, line);
+  }).map((info) => {
+    return getLineInfoMessage(info, line);
+  }).map((info) => {
+    return getLineInfoColumn(info, line);
+  }).map((info) => {
+    return getLineInfoPosition(info, line);
+  });
+
+  return result[0];
+};
+
+export const getDiagnosticInfo = (ILineInfo): any => {
   if (!ILineInfo) {
     return;
   }
@@ -68,7 +91,7 @@ export let getDiagnosticInfo = (ILineInfo): any => {
   };
 };
 
-export let makeZeroIndex = (value: number): number => {
+export const makeZeroIndex = (value: number): number => {
   if (value <= 0) {
     return 0;
   }

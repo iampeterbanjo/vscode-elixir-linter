@@ -26,66 +26,52 @@ describe("parse", () => {
     });
   });
 
-  describe(".getLineInfo", () => {
-    const testTree: any = [
-          {
-            check: "W",
-            column: 7,
-            line: "[W] → lib/rumbl.ex:27:7 Functions should have a @spec type specification.",
-            message: "Functions should have a @spec type specification.",
-            position: 27,
-          },
-          {
-            check: "Y",
-            column: 11,
-            line: "[Y] → lib/rumbl.ex:1:11 Modules should have a @moduledoc tag.",
-            message: "Modules should have a @moduledoc tag.",
-            position: 1,
-          },
-          {
-            check: "X",
-            column: 10001,
-            line: "[X] → lib/rumbl.ex:6:10001 Functions should have a @spec type specification.",
-            message: "Functions should have a @spec type specification.",
-            position: 6,
-          },
-          {
-            check: "D",
-            column: 40,
-            line: "[D] ↓ apps/persona/test/support/model_case.ex:62:40 Nested modules could be aliased",
-            message: "Nested modules could be aliased",
-            position: 62,
-          },
-          {
-            check: "F",
-            column: undefined,
-            line: "[F] → apps/persona/test/support/model_case.ex:62 Pipe chain should start with a raw value.",
-            message: "Pipe chain should start with a raw value.",
-            position: 62,
-          },
-        ];
-
-    it("should get expected line column", () => {
-      testTree.forEach((t) => {
-        assert.equal(parse.getLineInfo(t.line).column, t.column);
-      });
-    });
-
-    it("should get expected position", () => {
-      testTree.forEach((t) => {
-        assert.equal(parse.getLineInfo(t.line).position, t.position);
-      });
-    });
-
-    it("should get expected message", () => {
-      testTree.forEach((t) => {
-        assert.equal(parse.getLineInfo(t.line).message, t.message);
-      });
-    });
-
+  describe(".getLineInfoCheck", () => {
     it("should get expected check", () => {
-      testTree.forEach((t) => {
-        assert.equal(parse.getLineInfo(t.line).check, t.check);
+      fixtures.output.testTree.forEach((t) => {
+        const result = parse.getLineInfoCheck({}, t.line).check;
+        const error = `${result} === ${t.expected.check} when line is "${t.line}"`;
+        assert.equal(result, t.expected.check, error);
+      });
+    });
+  });
+
+  describe(".getLineInfoColumn", () => {
+    it("should get expected line column", () => {
+      fixtures.output.testTree.forEach((t) => {
+        const result = parse.getLineInfoColumn({}, t.line).column;
+        const error = `${result} === ${t.expected.column} when line is "${t.line}"`;
+        assert.equal(result, t.expected.column, error);
+      });
+    });
+  });
+
+  describe(".getLineInfoMessage", () => {
+    it("should get expected message", () => {
+      fixtures.output.testTree.forEach((t) => {
+        const result = parse.getLineInfoMessage({}, t.line).message;
+        const error = `${result} === ${t.expected.message} when line is "${t.line}"`;
+        assert.equal(result, t.expected.message, error);
+      });
+    });
+  });
+
+  describe(".getLineInfoPosition", () => {
+    it("should get expected position", () => {
+      fixtures.output.testTree.forEach((t) => {
+        const result = parse.getLineInfoPosition({}, t.line).position;
+        const error = `${result} === ${t.expected.position} when line is "${t.line}"`;
+        assert.equal(result, t.expected.position, error);
+      });
+    });
+  });
+
+  describe(".getLineInfo", () => {
+    it("should get expected info", () => {
+      fixtures.output.testTree.forEach((t) => {
+        const result = parse.getLineInfo(t.line);
+        const error = `${result} === ${t.expected} when line is "${t.line}"`;
+        assert.deepEqual(result, t.expected, error);
       });
     });
   });
