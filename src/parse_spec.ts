@@ -26,6 +26,44 @@ describe("parse", () => {
     });
   });
 
+  describe(".getFileInfo", () => {
+    it("should return an empty string by default", () => {
+      assert.equal(parse.getFileInfo(""), "");
+    });
+
+    it("should return expected item from file information", () => {
+      const line = "[W] → lib/rumbl.ex:27:7 Functions should have a @spec type specification.";
+      const testTree = [
+        {
+          expected: "lib/rumbl.ex",
+          value: undefined,
+        },
+        {
+          expected: "lib/rumbl.ex",
+          value: 0,
+        },
+        {
+          expected: 27,
+          value: 1,
+        },
+        {
+          expected: 7,
+          value: 2,
+        },
+        {
+          expected: [],
+          value: 5,
+        },
+      ];
+
+      testTree.forEach((t) => {
+        const result = parse.getFileInfo(line, t.value);
+        const error = `${result} === ${t.expected} when value is "${t.value}"`;
+        assert.equal(result, t.expected, error);
+      });
+    });
+  });
+
   describe(".getLineInfoCheck", () => {
     it("should get expected check", () => {
       fixtures.output.testTree.forEach((t) => {

@@ -17,6 +17,13 @@ export const getLines = (output): string[] => {
     });
 };
 
+export const getFileInfo = (line: string, index: number = 0): string => {
+  const fileInfo: string[] = (line.split(" ")[2] || "").split(":");
+  const found = fileInfo[index];
+
+  return found || "";
+};
+
 export const getLineInfoCheck = (info: ILineInfo, line: string): ILineInfo => {
   const lintInfo = line.split(" ");
   const checkIndex = 0;
@@ -26,9 +33,7 @@ export const getLineInfoCheck = (info: ILineInfo, line: string): ILineInfo => {
 };
 
 export const getLineInfoColumn = (info: ILineInfo, line: string): ILineInfo => {
-  const fileInfo: string[] = line.split(" ")[2].split(":");
-  const column = fileInfo[2];
-
+  const column = getFileInfo(line, 2);
   info.column = column ? parseInt(column, 10) : undefined;
 
   return info;
@@ -43,9 +48,7 @@ export const getLineInfoMessage = (info: ILineInfo, line: string): ILineInfo => 
 };
 
 export const getLineInfoPosition = (info: ILineInfo, line: string): ILineInfo => {
-  const fileInfo: string[] = line.split(" ")[2].split(":");
-  const position = fileInfo[1];
-
+  const position = getFileInfo(line, 1);
   info.position = position ? parseInt(position, 10) : undefined;
 
   return info;
