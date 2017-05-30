@@ -23,7 +23,7 @@ export default class ElixirLintingProvider {
     }
 
     // getDiagnosis for vscode.diagnostics
-    public getDiagnosis(item):vscode.Diagnostic {
+    public getDiagnosis(item): vscode.Diagnostic {
         let range = new vscode.Range(
             item.startLine,
             item.startColumn,
@@ -53,24 +53,36 @@ export default class ElixirLintingProvider {
         let decoded = ''
         let diagnostics: vscode.Diagnostic[] = [];
 
-        let args =  ['credo', 'list', '--format=oneline', '--read-from-stdin'];
+        let args = ['credo', 'list'];
+        let options = ['--format=oneline'];
+        const useStdin = textDocument.isDirty || textDocument.isUntitled;
+
+        if (useStdin) {
+            options = options.concat('--read-from-stdin');
+        }
+        else {
+            args = args.concat(textDocument.fileName);
+        }
 
         let settings = vscode.workspace.getConfiguration('elixirLinter');
         if (settings.useStrict === true) {
-            args = args.concat('--strict');
+            options = options.concat('--strict');
         }
 
         // use stdin for credo to prevent running on entire project
-        let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
-        childProcess.stdin.write(textDocument.getText());
-        childProcess.stdin.end();
+        let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args.concat(options), cmd.getOptions(vscode));
+
+        if (useStdin) {
+            childProcess.stdin.write(textDocument.getText());
+            childProcess.stdin.end();
+        }
 
         if (childProcess.pid) {
             childProcess.stdout.on('data', (data: Buffer) => {
                 decoded += data;
             });
             childProcess.stdout.on('end', () => {
-                this.parseOutput(decoded).forEach( item => {
+                this.parseOutput(decoded).forEach(item => {
                     if (item) {
                         diagnostics.push(this.getDiagnosis(item));
                     }
