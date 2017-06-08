@@ -3,6 +3,9 @@ All notable changes to the "elixirlinter" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.3.1
+- Respect credo settings
+
 ## 0.3.0
 - Add extension icon
 - Add setting for using strict linting

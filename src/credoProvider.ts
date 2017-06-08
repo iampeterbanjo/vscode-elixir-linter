@@ -59,8 +59,7 @@ export default class ElixirLintingProvider {
 
         if (useStdin) {
             options = options.concat('--read-from-stdin');
-        }
-        else {
+        } else {
             args = args.concat(textDocument.fileName);
         }
 
