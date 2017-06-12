@@ -31,3 +31,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 * [vscode-credo](https://github.com/joshjg/vscode-credo)
 * [yeoman](http://yeoman.io/)
 * [vscode-extension-tutorial](https://github.com/hoovercj/vscode-extension-tutorial)
+
+## Authors
+* [iampeterbanjo](https://github.com/iampeterbanjo)
+* [piersadrian](https://github.com/piersadrian)
