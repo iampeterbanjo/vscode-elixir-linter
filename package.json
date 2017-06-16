@@ -38,6 +38,36 @@
           "type": "boolean",
           "default": false,
           "description": "Use strict mode with Credo"
+        },
+        "elixirLinter.defaultSeverity": {
+          "type": "number",
+          "default": 1,
+          "description": "Default lint error severity"
+        },
+        "elixirLinter.consistencySeverity": {
+          "type": "number",
+          "default": 2,
+          "description": "Lint consistency error severity"
+        },
+        "elixirLinter.designSeverity": {
+          "type": "number",
+          "default": 3,
+          "description": "Lint design error severity"
+        },
+        "elixirLinter.refactoringSeverity": {
+          "type": "number",
+          "default": 3,
+          "description": "Lint refactoring error severity"
+        },
+        "elixirLinter.readabilitySeverity": {
+          "type": "number",
+          "default": 2,
+          "description": "Lint readability error severity"
+        },
+        "elixirLinter.warningsSeverity": {
+          "type": "number",
+          "default": 1,
+          "description": "Lint warnings error severity"
         }
       }
     }

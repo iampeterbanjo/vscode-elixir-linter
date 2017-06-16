@@ -1,3 +1,5 @@
+import * as severity from "../src/severity";
+
 interface ILineInfo {
   check?: string;
   column?: number;
@@ -88,7 +90,7 @@ export const getDiagnosticInfo = (ILineInfo): any => {
     endColumn: makeZeroIndex(ILineInfo.column),
     endLine: makeZeroIndex(ILineInfo.position),
     message: ILineInfo.message,
-    severity: 1,
+    severity: severity.parse(ILineInfo.check),
     startColumn: 0,
     startLine: makeZeroIndex(ILineInfo.position),
   };
