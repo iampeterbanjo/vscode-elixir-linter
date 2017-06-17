@@ -78,7 +78,6 @@
     "lint": "npm run lint:src && npm run lint:test",
     "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:test": "tslint -c tslint.json 'test/**/*.ts' -e test/index.ts",
-    "preinstall": "./bin/before_install.sh",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "pretest": "npm run clean",
     "test": "npm run lint --silent && npm run test:typescript --silent && npm run test:vscode --silent",
