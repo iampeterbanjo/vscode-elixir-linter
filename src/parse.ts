@@ -1,5 +1,3 @@
-import * as severity from "../src/severity";
-
 interface ILineInfo {
   check?: string;
   column?: number;
@@ -72,28 +70,6 @@ export const getLineInfo = (line): ILineInfo => {
   });
 
   return result[0];
-};
-
-export const getDiagnosticInfo = (ILineInfo): any => {
-  if (!ILineInfo) {
-    return;
-  }
-
-  const isNotAnumber = isNaN(parseInt(ILineInfo.position, 10)) || isNaN(parseInt(ILineInfo.column, 10));
-  const isLessThanOrEqualToZero = ILineInfo.position <= 0 || ILineInfo.column <= 0;
-
-  if (isNotAnumber || isLessThanOrEqualToZero) {
-    return;
-  }
-
-  return {
-    endColumn: makeZeroIndex(ILineInfo.column),
-    endLine: makeZeroIndex(ILineInfo.position),
-    message: ILineInfo.message,
-    severity: severity.parse(ILineInfo.check),
-    startColumn: 0,
-    startLine: makeZeroIndex(ILineInfo.position),
-  };
 };
 
 export const makeZeroIndex = (value: number): number => {

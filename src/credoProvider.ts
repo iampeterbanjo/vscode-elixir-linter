@@ -7,6 +7,8 @@ import * as vscode from "vscode";
 import * as cmd from "./command";
 import * as parse from "./parse";
 
+import * as severity from "../src/severity";
+
 import IdeExtensionProvider from "./ideExtensionProvider";
 
 export default class ElixirLintingProvider {
@@ -40,6 +42,28 @@ export default class ElixirLintingProvider {
         this.extension.dispose();
     }
 
+    public getDiagnosticInfo = (ILineInfo): any => {
+        if (!ILineInfo) {
+            return;
+        }
+
+        const isNotAnumber = isNaN(parseInt(ILineInfo.position, 10)) || isNaN(parseInt(ILineInfo.column, 10));
+        const isLessThanOrEqualToZero = ILineInfo.position <= 0 || ILineInfo.column <= 0;
+
+        if (isNotAnumber || isLessThanOrEqualToZero) {
+            return;
+        }
+
+        return {
+            endColumn: parse.makeZeroIndex(ILineInfo.column),
+            endLine: parse.makeZeroIndex(ILineInfo.position),
+            message: ILineInfo.message,
+            severity: severity.parse(ILineInfo.check),
+            startColumn: 0,
+            startLine: parse.makeZeroIndex(ILineInfo.position),
+        };
+    }
+
     // getDiagnosis for vscode.diagnostics
     public getDiagnosis(item): vscode.Diagnostic {
         const range = new vscode.Range(
@@ -55,7 +79,7 @@ export default class ElixirLintingProvider {
         return parse.getLines(output).map((error) => {
             const lineInfo = parse.getLineInfo(error);
 
-            return parse.getDiagnosticInfo(lineInfo);
+            return this.getDiagnosticInfo(lineInfo);
         });
     }
 
