@@ -4,24 +4,24 @@ import CredoProvider from "../src/credoProvider";
 
 import * as fixtures from "../test/fixtures";
 
-import * as vscode from "vscode";
+import * as vscode_mock from "./vscode_mock";
 
-suite("CredoProvider", () => {
-  suite(".getDiagnosticInfo", () => {
+describe("CredoProvider", () => {
+  describe(".getDiagnosticInfo", () => {
     let credo;
     let mockCollection;
 
-    setup(() => {
-        mockCollection = vscode.languages.createDiagnosticCollection("mock");
+    beforeEach(() => {
+        mockCollection = vscode_mock.languages.createDiagnosticCollection("mock");
 
         credo = new CredoProvider(mockCollection);
     });
 
-    test("should be undefined if no params", () => {
+    it("should be undefined if no params", () => {
       assert.equal(credo.getDiagnosticInfo(null), undefined);
     });
 
-    test("should be undefined if position is falsy", () => {
+    it("should be undefined if position is falsy", () => {
       [
         {column: 3, position:  0},
         {column: 66, position: undefined},
@@ -33,7 +33,7 @@ suite("CredoProvider", () => {
       });
     });
 
-    test("should be undefined if column is falsy", () => {
+    it("should be undefined if column is falsy", () => {
       [
         {position: 5, column: 0},
         {position: 6, column: undefined},
@@ -45,19 +45,19 @@ suite("CredoProvider", () => {
       });
     });
 
-    test("should be undefined if column is less than 1", () => {
+    it("should be undefined if column is less than 1", () => {
       assert.equal(credo.getDiagnosticInfo({column: -1}), undefined);
     });
 
-    test("should be undefined if position is less than 1", () => {
+    it("should be undefined if position is less than 1", () => {
       assert.equal(credo.getDiagnosticInfo({position: -20}), undefined);
     });
 
-    test("should NOT be undefined if column and position are 1", () => {
+    it("should NOT be undefined if column and position are 1", () => {
       assert.ok(credo.getDiagnosticInfo({column: 1, position: 1}) !== undefined);
     });
 
-    test("should result in startLine <= endLine", () => {
+    it("should result in startLine <= endLine", () => {
         [
           { column: 1, position: 1 },
           { column: 20, position: 5 },
@@ -68,7 +68,7 @@ suite("CredoProvider", () => {
         });
     });
 
-    test("should result in startColumn <= endColumn", () => {
+    it("should result in startColumn <= endColumn", () => {
         [
           { column: 1, position: 1 },
           { column: 20, position: 5 },
@@ -79,7 +79,7 @@ suite("CredoProvider", () => {
         });
     });
 
-    test("should have the expected message", () => {
+    it("should have the expected message", () => {
       [
         {column: 1, position: 1, message: "We are number 1"},
         {column: 12, position: 31, message: 0},
@@ -89,7 +89,7 @@ suite("CredoProvider", () => {
       });
     });
 
-    test("should have severity of vscode.DiagnosticSeverity.Warning", () => {
+    it("should have severity of vscode_mock.DiagnosticSeverity.Warning", () => {
       assert.equal(credo.getDiagnosticInfo({column: 42, position: 24}).severity, 1);
     });
   });

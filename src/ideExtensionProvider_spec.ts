@@ -3,28 +3,28 @@ import * as sinon from "sinon";
 
 import IdeExtensionProvider from "../src/ideExtensionProvider";
 
-import * as vscode from "vscode";
+import * as vscode_mock from "./vscode_mock";
 
-suite("IdeExtensionProvider", () => {
+describe("IdeExtensionProvider", () => {
   let mockCommand;
 
-  suiteSetup(() => {
-      mockCommand = vscode.commands.registerCommand("mock", () => {
+  beforeEach(() => {
+      mockCommand = vscode_mock.commands.registerCommand("mock", () => {
         return 0;
       });
   });
 
-  suite(".removeFromDiagnosticCollection", () => {
+  describe(".removeFromDiagnosticCollection", () => {
     let ideExtensionProvider;
     let mockCollection;
 
-    setup(() => {
-        mockCollection = vscode.languages.createDiagnosticCollection("mock");
+    beforeEach(() => {
+        mockCollection = vscode_mock.languages.createDiagnosticCollection("mock");
 
         ideExtensionProvider = new IdeExtensionProvider(mockCollection, mockCommand);
     });
 
-    test("should call `collection.delete`", () => {
+    it("should call `collection.delete`", () => {
       const spy = sinon.spy();
 
       sinon.stub(ideExtensionProvider.diagnosticCollection, "delete").callsFake(spy);
@@ -35,7 +35,7 @@ suite("IdeExtensionProvider", () => {
       ideExtensionProvider.diagnosticCollection.delete.restore();
     });
 
-    test("should call `collection.delete`", () => {
+    it("should call `collection.delete`", () => {
       const spy = sinon.spy();
 
       sinon.stub(ideExtensionProvider.diagnosticCollection, "delete").callsFake(spy);
@@ -46,7 +46,7 @@ suite("IdeExtensionProvider", () => {
       ideExtensionProvider.diagnosticCollection.delete.restore();
     });
 
-    test("should call `collection.delete` with documentUri", () => {
+    it("should call `collection.delete` with documentUri", () => {
       const spy = sinon.spy();
       const documentUri = "file://path/to/file";
 
@@ -59,17 +59,17 @@ suite("IdeExtensionProvider", () => {
     });
   });
 
-  suite(".dispose", () => {
+  describe(".dispose", () => {
     let ideExtensionProvider;
     let mockCollection;
 
-    setup(() => {
-        mockCollection = vscode.languages.createDiagnosticCollection("mock");
+    beforeEach(() => {
+        mockCollection = vscode_mock.languages.createDiagnosticCollection("mock");
 
         ideExtensionProvider = new IdeExtensionProvider(mockCollection, mockCommand);
     });
 
-    test("should call `collection.clear`", () => {
+    it("should call `collection.clear`", () => {
       const spy = sinon.spy();
 
       sinon.stub(ideExtensionProvider.diagnosticCollection, "clear").callsFake(spy);
@@ -80,7 +80,7 @@ suite("IdeExtensionProvider", () => {
       ideExtensionProvider.diagnosticCollection.clear.restore();
     });
 
-    test("should call `collection.dispose`", () => {
+    it("should call `collection.dispose`", () => {
       const spy = sinon.spy();
 
       sinon.stub(ideExtensionProvider.diagnosticCollection, "dispose").callsFake(spy);
@@ -91,7 +91,7 @@ suite("IdeExtensionProvider", () => {
       ideExtensionProvider.diagnosticCollection.dispose.restore();
     });
 
-    test("should call `command.dispose`", () => {
+    it("should call `command.dispose`", () => {
       const spy = sinon.spy();
 
       sinon.stub(ideExtensionProvider.command, "dispose").callsFake(spy);
@@ -103,7 +103,7 @@ suite("IdeExtensionProvider", () => {
     });
   });
 
-  suite(".activate", () => {
+  describe(".activate", () => {
     let ideExtensionProvider;
 
     const subscriptions = [];
@@ -114,133 +114,133 @@ suite("IdeExtensionProvider", () => {
           message: "I am a linter",
         };
 
-    setup(() => {
+    beforeEach(() => {
       ideExtensionProvider = new IdeExtensionProvider({}, {});
     });
 
-    test("should add `extension` to `subscriptions`", () => {
+    it("should add `extension` to `subscriptions`", () => {
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock);
 
       assert.ok(subscriptions.indexOf(extension) > -1);
     });
 
-    test("should call vscode.workspace.onDidOpenTextDocument", () => {
+    it("should call vscode_mock.workspace.onDidOpenTextDocument", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidOpenTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidOpenTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock);
 
       assert.ok(spy.calledOnce);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidOpenTextDocument with linter", () => {
+    it("should call vscode_mock.workspace.onDidOpenTextDocument with linter", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidOpenTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidOpenTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[0], linter);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidOpenTextDocument with extension", () => {
+    it("should call vscode_mock.workspace.onDidOpenTextDocument with extension", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidOpenTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidOpenTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[1], extension);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidOpenTextDocument with subscriptions", () => {
+    it("should call vscode_mock.workspace.onDidOpenTextDocument with subscriptions", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidOpenTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidOpenTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[2], subscriptions);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidCloseTextDocument", () => {
+    it("should call vscode_mock.workspace.onDidCloseTextDocument", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidCloseTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidCloseTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.ok(spy.calledOnce);
 
       stub.restore();
     });
 
-    test(`should call vscode.workspace.onDidCloseTextDocument with
+    it(`should call vscode_mock.workspace.onDidCloseTextDocument with
       ideExtensionProvider.removeFromDiagnosticCollection`, () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidCloseTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidCloseTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[0], ideExtensionProvider.removeFromDiagnosticCollection);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidCloseTextDocument with null", () => {
+    it("should call vscode_mock.workspace.onDidCloseTextDocument with null", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidCloseTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidCloseTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[1], null);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidCloseTextDocument with subscriptions", () => {
+    it("should call vscode_mock.workspace.onDidCloseTextDocument with subscriptions", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidCloseTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidCloseTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[2], subscriptions);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidSaveTextDocument", () => {
+    it("should call vscode_mock.workspace.onDidSaveTextDocument", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidSaveTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidSaveTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.ok(spy.calledOnce);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidSaveTextDocument with linter", () => {
+    it("should call vscode_mock.workspace.onDidSaveTextDocument with linter", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidSaveTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidSaveTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[0], linter);
 
       stub.restore();
     });
 
-    test("should call vscode.workspace.onDidSaveTextDocument with extension", () => {
+    it("should call vscode_mock.workspace.onDidSaveTextDocument with extension", () => {
       const spy = sinon.spy();
-      const stub = sinon.stub(vscode.workspace, "onDidSaveTextDocument").callsFake(spy);
+      const stub = sinon.stub(vscode_mock.workspace, "onDidSaveTextDocument").callsFake(spy);
 
-      ideExtensionProvider.activate(extension, subscriptions, vscode, linter);
+      ideExtensionProvider.activate(extension, subscriptions, vscode_mock, linter);
 
       assert.deepEqual(spy.getCall(0).args[1], extension);
 

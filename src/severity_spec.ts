@@ -3,19 +3,19 @@ import * as sinon from "sinon";
 
 import * as severity from "../src/severity";
 
-import * as vscode from "vscode";
+import * as vscode_mock from "./vscode_mock";
 
-suite("severity", () => {
+describe("severity", () => {
 
-  suite(".parse", () => {
-    test("should return `1` by default", () => {
+  describe(".parse", () => {
+    it("should return `1` by default", () => {
       const result = severity.parse("BLAH");
       assert.equal(result, 1);
     });
 
-    test("should return `defaultSeverity` setting by default if set", () => {
+    it("should return `defaultSeverity` setting by default if set", () => {
       const testSeverity = 42;
-      const mockSettings = sinon.stub(vscode.workspace, "getConfiguration").callsFake(() => {
+      const mockSettings = sinon.stub(vscode_mock.workspace, "getConfiguration").callsFake(() => {
         return {
           defaultSeverity: testSeverity,
         };
@@ -27,7 +27,7 @@ suite("severity", () => {
       mockSettings.restore();
     });
 
-    test("should return expected severity", () => {
+    it("should return expected severity", () => {
       [
         {check: "C", expected: 2},
         {check: "R", expected: 2},
@@ -41,14 +41,14 @@ suite("severity", () => {
       });
     });
 
-    test("should return expected default severity for each error from settings", () => {
+    it("should return expected default severity for each error from settings", () => {
       const consistencyError = 10;
       const readabilityError = 11;
       const refactoringError = 12;
       const designError = 14;
       const warningsError = 15;
 
-      const mockSettings = sinon.stub(vscode.workspace, "getConfiguration").callsFake(() => {
+      const mockSettings = sinon.stub(vscode_mock.workspace, "getConfiguration").callsFake(() => {
           return {
             consistencySeverity: consistencyError,
             designSeverity: designError,

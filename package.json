@@ -5,7 +5,7 @@
   "version": "0.3.0",
   "publisher": "iampeterbanjo",
   "engines": {
-    "vscode": "1",
+    "vscode": "^1.0.0",
     "node": ">=6.10.0"
   },
   "categories": [
@@ -90,6 +90,7 @@
   "devDependencies": {
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
+    "assert": "^1.4.1",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "sinon": "^2.1.0",
@@ -100,7 +101,6 @@
   "dependencies": {
     "global": "^4.3.1",
     "parallelshell": "^2.0.0",
-    "testem": "^1.15.0",
     "yarn": "^0.20.3"
   },
   "license": "MIT",
