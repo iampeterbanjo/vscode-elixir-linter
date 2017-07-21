@@ -1,6 +1,4 @@
-import * as vscode from "vscode";
-
-export const parse = (check: string) => {
+export const parse = (check: string, vscode) => {
   const settings = vscode.workspace.getConfiguration("elixirLinter");
 
   /**

@@ -3,7 +3,6 @@
 import * as cp from "child_process";
 import * as path from "path";
 
-import * as vscode from "vscode";
 import * as cmd from "./command";
 import * as parse from "./parse";
 
@@ -14,14 +13,14 @@ import IdeExtensionProvider from "./ideExtensionProvider";
 export default class ElixirLintingProvider {
     private static linterCommand: string = "mix";
 
-    private command: vscode.Disposable;
+    private command: any;
 
-    private diagnosticCollection: vscode.DiagnosticCollection;
+    private diagnosticCollection: any;
 
     private extension: any;
 
-    constructor(diagnosticCollection: vscode.DiagnosticCollection) {
-        this.diagnosticCollection = diagnosticCollection;
+    constructor(vscode) {
+        this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
         this.extension = new IdeExtensionProvider(this.diagnosticCollection, this.command);
     }
 
@@ -31,48 +30,59 @@ export default class ElixirLintingProvider {
      *  sets up listeners to trigger the linting action.
      */
 
-    public activate(subscriptions: vscode.Disposable[]) {
+    public activate(subscriptions: any[], vscode) {
         this.extension.activate(this, subscriptions, vscode, this.linter);
 
         // Lint all open elixir documents
-        vscode.workspace.textDocuments.forEach(this.linter, this);
+        vscode.workspace.textDocuments.forEach((item, index) => {
+            this.linter(item, index, vscode);
+        });
     }
 
     public dispose(): void {
         this.extension.dispose();
     }
 
-    public getDiagnosticInfo = (ILineInfo): any => {
-        if (!ILineInfo) {
-            return;
-        }
-
-        const isNotAnumber = isNaN(parseInt(ILineInfo.position, 10)) || isNaN(parseInt(ILineInfo.column, 10));
-        const isLessThanOrEqualToZero = ILineInfo.position <= 0 || ILineInfo.column <= 0;
-
-        if (isNotAnumber || isLessThanOrEqualToZero) {
-            return;
-        }
-
-        return {
-            endColumn: parse.makeZeroIndex(ILineInfo.column),
-            endLine: parse.makeZeroIndex(ILineInfo.position),
-            message: ILineInfo.message,
-            severity: severity.parse(ILineInfo.check),
-            startColumn: 0,
-            startLine: parse.makeZeroIndex(ILineInfo.position),
-        };
-    }
-
     // getDiagnosis for vscode.diagnostics
-    public getDiagnosis(item): vscode.Diagnostic {
+    public getDiagnosis(item, vscode): any {
         const range = new vscode.Range(
             item.endColumn,
             item.endLine,
             item.startColumn,
             item.startLine,
         );
-        return new vscode.Diagnostic(range, item.message, item.severity);
+        const itemSeverity = severity.parse(item.check, vscode);
+        return new vscode.Diagnostic(range, item.message, itemSeverity);
+    }
+
+    public makeZeroIndex = (value: number): number => {
+        if (value <= 0) {
+            return 0;
+        }
+
+        return value - 1;
+    }
+
+    public getDiagnosticInfo = (lineInfo): any => {
+        if (!lineInfo) {
+            return;
+        }
+
+        const isNotAnumber = isNaN(parseInt(lineInfo.position, 10)) || isNaN(parseInt(lineInfo.column, 10));
+        const isLessThanOrEqualToZero = lineInfo.position <= 0 || lineInfo.column <= 0;
+
+        if (isNotAnumber || isLessThanOrEqualToZero) {
+            return;
+        }
+
+        return {
+            check: lineInfo.check,
+            endColumn: this.makeZeroIndex(lineInfo.column),
+            endLine: this.makeZeroIndex(lineInfo.position),
+            message: lineInfo.message,
+            startColumn: 0,
+            startLine: this.makeZeroIndex(lineInfo.position),
+        };
     }
 
     public parseOutput(output) {
@@ -90,13 +100,13 @@ export default class ElixirLintingProvider {
      * which add the chrome in the UI.
      */
 
-    private linter(textDocument: vscode.TextDocument) {
+    private linter(textDocument: any, index, vscode) {
         if (textDocument.languageId !== "elixir") {
             return;
         }
 
         let decoded = "";
-        const diagnostics: vscode.Diagnostic[] = [];
+        const diagnostics: any[] = [];
 
         let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
 
@@ -117,7 +127,7 @@ export default class ElixirLintingProvider {
             childProcess.stdout.on("end", () => {
                 this.parseOutput(decoded).forEach( (item) => {
                     if (item) {
-                        diagnostics.push(this.getDiagnosis(item));
+                        diagnostics.push(this.getDiagnosis(item, vscode));
                     }
 
                 });

@@ -4,17 +4,14 @@ import CredoProvider from "../src/credoProvider";
 
 import * as fixtures from "../test/fixtures";
 
-import * as vscode_mock from "./vscode_mock";
+import * as vscodeMock from "./vscode_mock";
 
 describe("CredoProvider", () => {
   describe(".getDiagnosticInfo", () => {
     let credo;
-    let mockCollection;
 
     beforeEach(() => {
-        mockCollection = vscode_mock.languages.createDiagnosticCollection("mock");
-
-        credo = new CredoProvider(mockCollection);
+        credo = new CredoProvider(vscodeMock);
     });
 
     it("should be undefined if no params", () => {
@@ -89,8 +86,35 @@ describe("CredoProvider", () => {
       });
     });
 
-    it("should have severity of vscode_mock.DiagnosticSeverity.Warning", () => {
-      assert.equal(credo.getDiagnosticInfo({column: 42, position: 24}).severity, 1);
+    it("should have expected `check`", () => {
+      [
+        {column: 42, position: 24, check: 1},
+        {column: 42, position: 24, check: "W"},
+        {column: 42, position: 24, check: undefined},
+      ].forEach((t) => {
+        assert.equal(credo.getDiagnosticInfo(t).check, t.check, `when check is ${t.check}`);
+      });
+    });
+  });
+
+  describe(".makeZeroIndex", () => {
+    const credo = new CredoProvider(vscodeMock);
+
+    it("should return 0 when value is less than 0", () => {
+      assert.equal(credo.makeZeroIndex(0), 0);
+    });
+
+    it("should decrement value by 1 when value is greater than 0", () => {
+      [
+        {value: 0, expected: 0},
+        {value: -1, expected: 0},
+        {value: -31, expected: 0},
+        {value: 2, expected: 1},
+        {value: 5, expected: 4},
+        {value: 700, expected: 699},
+      ].forEach((t) => {
+        assert.equal(credo.makeZeroIndex(t.value), t.expected);
+      });
     });
   });
 });

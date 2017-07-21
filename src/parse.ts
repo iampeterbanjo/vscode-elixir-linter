@@ -71,11 +71,3 @@ export const getLineInfo = (line): ILineInfo => {
 
   return result[0];
 };
-
-export const makeZeroIndex = (value: number): number => {
-  if (value <= 0) {
-    return 0;
-  }
-
-  return value - 1;
-};

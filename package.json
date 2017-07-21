@@ -81,8 +81,7 @@
     "lint:test": "tslint -c tslint.json 'test/**/*.ts' -e test/index.ts",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "pretest": "npm run clean",
-    "test": "npm run lint --silent && npm run test:typescript --silent && npm run test:vscode --silent",
-    "test:vscode": "node ./node_modules/vscode/bin/test",
+    "test": "npm run lint --silent && npm run test:typescript --silent",
     "test:typescript": "tsc && mocha 'out/src/*_spec.js'",
     "test:watch": "nodemon -e 'ts' -x 'npm run test'",
     "vscode:prepublish": "tsc -p ./"

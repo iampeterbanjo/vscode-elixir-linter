@@ -3,25 +3,25 @@ import * as sinon from "sinon";
 
 import * as severity from "../src/severity";
 
-import * as vscode_mock from "./vscode_mock";
+import * as vscodeMock from "./vscode_mock";
 
 describe("severity", () => {
 
   describe(".parse", () => {
     it("should return `1` by default", () => {
-      const result = severity.parse("BLAH");
+      const result = severity.parse("BLAH", vscodeMock);
       assert.equal(result, 1);
     });
 
     it("should return `defaultSeverity` setting by default if set", () => {
       const testSeverity = 42;
-      const mockSettings = sinon.stub(vscode_mock.workspace, "getConfiguration").callsFake(() => {
+      const mockSettings = sinon.stub(vscodeMock.workspace, "getConfiguration").callsFake(() => {
         return {
           defaultSeverity: testSeverity,
         };
       });
 
-      const result = severity.parse("WHAT");
+      const result = severity.parse("WHAT", vscodeMock);
       assert.equal(result, testSeverity);
 
       mockSettings.restore();
@@ -35,7 +35,7 @@ describe("severity", () => {
         {check: "D", expected: 3},
         {check: "W", expected: 1},
       ].forEach((t) => {
-        const result = severity.parse(t.check);
+        const result = severity.parse(t.check, vscodeMock);
         const error = `${result} === ${t.expected} when check is "${t.check}"`;
         assert.equal(result, t.expected);
       });
@@ -48,7 +48,7 @@ describe("severity", () => {
       const designError = 14;
       const warningsError = 15;
 
-      const mockSettings = sinon.stub(vscode_mock.workspace, "getConfiguration").callsFake(() => {
+      const mockSettings = sinon.stub(vscodeMock.workspace, "getConfiguration").callsFake(() => {
           return {
             consistencySeverity: consistencyError,
             designSeverity: designError,
@@ -65,7 +65,7 @@ describe("severity", () => {
         {check: "D", expected: designError},
         {check: "W", expected: warningsError},
       ].forEach((t) => {
-        const result = severity.parse(t.check);
+        const result = severity.parse(t.check, vscodeMock);
         const error = `${result} === ${t.expected} when check is "${t.check}"`;
         assert.equal(result, t.expected);
       });

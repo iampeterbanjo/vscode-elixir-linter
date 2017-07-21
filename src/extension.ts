@@ -10,6 +10,6 @@ import * as vscode from "vscode";
 import ElixirLintingProvider from "./credoProvider";
 
 export function activate(context: vscode.ExtensionContext) {
-    const linter = new ElixirLintingProvider(vscode.languages.createDiagnosticCollection());
-    linter.activate(context.subscriptions);
+    const linter = new ElixirLintingProvider(vscode);
+    linter.activate(context.subscriptions, vscode);
 }
