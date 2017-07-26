@@ -1,109 +1,142 @@
-'use strict';
+"use strict";
 
-import * as path from 'path';
-import * as cp from 'child_process';
+import * as cp from "child_process";
+import * as path from "path";
 
-import * as vscode from 'vscode';
-import * as cmd from './command';
-import * as parse from './parse';
-import IdeExtensionProvider from './ideExtensionProvider';
+import * as cmd from "./command";
+import * as parse from "./parse";
+
+import * as severity from "../src/severity";
+
+import IdeExtensionProvider from "./ideExtensionProvider";
 
 export default class ElixirLintingProvider {
-    private static linterCommand: string = 'mix';
+    private static linterCommand: string = "mix";
 
-    private command: vscode.Disposable;
+    private command: any;
 
-    private diagnosticCollection: vscode.DiagnosticCollection;
+    private diagnosticCollection: any;
 
     private extension: any;
 
-    constructor(diagnosticCollection: vscode.DiagnosticCollection) {
-        this.diagnosticCollection = diagnosticCollection;
+    private vscode: any;
+
+    constructor(vscode) {
+        this.vscode = vscode;
+        this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
         this.extension = new IdeExtensionProvider(this.diagnosticCollection, this.command);
     }
 
+    /**
+     * activate() and dispose() deal with set-up and tear-down in VS Code extensions.
+     * The code below registers the command so that the CodeActionProvider can call it and
+     *  sets up listeners to trigger the linting action.
+     */
+
+    public activate(subscriptions: any[], vscode = this.vscode) {
+        this.extension.activate(this, subscriptions, vscode, this.linter);
+
+        // Lint all open elixir documents
+        vscode.workspace.textDocuments.forEach((item, index) => {
+            this.linter(item, index, vscode);
+        });
+    }
+
+    public dispose(): void {
+        this.extension.dispose();
+    }
+
     // getDiagnosis for vscode.diagnostics
-    public getDiagnosis(item): vscode.Diagnostic {
-        let range = new vscode.Range(
-            item.startLine,
-            item.startColumn,
+    public getDiagnosis(item, vscode= this.vscode): any {
+        const range = new vscode.Range(
+            item.endColumn,
             item.endLine,
-            item.endColumn
+            item.startColumn,
+            item.startLine,
         );
-        return new vscode.Diagnostic(range, item.message, item.severity);
+        const itemSeverity = severity.parse(item.check, vscode);
+        const message = `${item.message} [${item.check}:${itemSeverity}]`;
+        return new vscode.Diagnostic(range, message, itemSeverity);
+    }
+
+    public makeZeroIndex = (value: number): number => {
+        if (value <= 0) {
+            return 0;
+        }
+
+        return value - 1;
+    }
+
+    public getDiagnosticInfo = (lineInfo): any => {
+        if (!lineInfo) {
+            return;
+        }
+
+        const isNotAnumber = isNaN(parseInt(lineInfo.position, 10)) || isNaN(parseInt(lineInfo.column, 10));
+        const isLessThanOrEqualToZero = lineInfo.position <= 0 || lineInfo.column <= 0;
+
+        if (isNotAnumber || isLessThanOrEqualToZero) {
+            return;
+        }
+
+        return {
+            check: lineInfo.check,
+            endColumn: this.makeZeroIndex(lineInfo.column),
+            endLine: this.makeZeroIndex(lineInfo.position),
+            message: lineInfo.message,
+            startColumn: 0,
+            startLine: this.makeZeroIndex(lineInfo.position),
+        };
     }
 
     public parseOutput(output) {
-        return parse.getLines(output).map(error => {
-            let lineInfo = parse.getLineInfo(error);
+        return parse.getLines(output).map((error) => {
+            const lineInfo = parse.getLineInfo(error);
 
-            return parse.getDiagnosticInfo(lineInfo);
+            return this.getDiagnosticInfo(lineInfo);
         });
     }
 
     /**
-     Using cp.spawn(), extensions can call any executable and process the results. The code below uses cp.spawn() to call linter, parses the output into Diagnostic objects, and then adds them to a DiagnosticCollection with this.diagnosticCollection.set(textDocument.uri, diagnostics); which add the chrome in the UI.
+     * Using cp.spawn(), extensions can call any executable and process the results.
+     * The code below uses cp.spawn() to call linter, parses the output into Diagnostic objects
+     * and then adds them to a DiagnosticCollection with this.diagnosticCollection.set(textDocument.uri, diagnostics);
+     * which add the chrome in the UI.
      */
 
-    private linter(textDocument: vscode.TextDocument) {
-        if (textDocument.languageId !== 'elixir') {
+    private linter(textDocument: any, index, vscode = this.vscode) {
+        if (textDocument.languageId !== "elixir") {
             return;
         }
 
-        let decoded = ''
-        let diagnostics: vscode.Diagnostic[] = [];
+        let decoded = "";
+        const diagnostics: any[] = [];
 
-        let args = ['credo', 'list'];
-        let options = ['--format=oneline'];
-        const useStdin = textDocument.isDirty || textDocument.isUntitled;
+        let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
 
-        if (useStdin) {
-            options = options.concat('--read-from-stdin');
-        } else {
-            args = args.concat(textDocument.fileName);
-        }
-
-        let settings = vscode.workspace.getConfiguration('elixirLinter');
+        const settings = vscode.workspace.getConfiguration("elixirLinter");
         if (settings.useStrict === true) {
-            options = options.concat('--strict');
+            args = args.concat("--strict");
         }
 
         // use stdin for credo to prevent running on entire project
-        let childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args.concat(options), cmd.getOptions(vscode));
-
-        if (useStdin) {
-            childProcess.stdin.write(textDocument.getText());
-            childProcess.stdin.end();
-        }
+        const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
+        childProcess.stdin.write(textDocument.getText());
+        childProcess.stdin.end();
 
         if (childProcess.pid) {
-            childProcess.stdout.on('data', (data: Buffer) => {
+            childProcess.stdout.on("data", (data: Buffer) => {
                 decoded += data;
             });
-            childProcess.stdout.on('end', () => {
-                this.parseOutput(decoded).forEach(item => {
+            childProcess.stdout.on("end", () => {
+                this.parseOutput(decoded).forEach( (item) => {
                     if (item) {
-                        diagnostics.push(this.getDiagnosis(item));
+                        diagnostics.push(this.getDiagnosis(item, vscode));
                     }
 
                 });
                 this.diagnosticCollection.set(textDocument.uri, diagnostics);
             });
         }
-    }
-
-    /**
-     activate() and dispose() deal with set-up and tear-down in VS Code extensions. The code below registers the command so that the CodeActionProvider can call it and sets up listeners to trigger the linting action.
-     */
-
-    public activate(subscriptions: vscode.Disposable[]) {
-        this.extension.activate(this, subscriptions, vscode, this.linter);
-
-        // Lint all open elixir documents
-        vscode.workspace.textDocuments.forEach(this.linter, this);
-    }
-
-    public dispose(): void {
-        this.extension.dispose();
     }
 }

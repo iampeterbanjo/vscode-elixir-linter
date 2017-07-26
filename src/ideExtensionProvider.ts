@@ -7,7 +7,7 @@ export default class IdeExtensionProvider {
     this.command = command;
   }
 
-  public dispose = ():void => {
+  public dispose = (): void => {
     this.diagnosticCollection.clear();
     this.diagnosticCollection.dispose();
     this.command.dispose();
@@ -21,7 +21,7 @@ export default class IdeExtensionProvider {
     vscode.workspace.onDidCloseTextDocument(this.removeFromDiagnosticCollection, null, subscriptions);
   }
 
-  public removeFromDiagnosticCollection = (uri):void => {
+  public removeFromDiagnosticCollection = (uri): void => {
     this.diagnosticCollection.delete(uri);
   }
 }
