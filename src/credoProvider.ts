@@ -19,7 +19,10 @@ export default class ElixirLintingProvider {
 
     private extension: any;
 
+    private vscode: any;
+
     constructor(vscode) {
+        this.vscode = vscode;
         this.diagnosticCollection = vscode.languages.createDiagnosticCollection();
         this.extension = new IdeExtensionProvider(this.diagnosticCollection, this.command);
     }
@@ -30,7 +33,7 @@ export default class ElixirLintingProvider {
      *  sets up listeners to trigger the linting action.
      */
 
-    public activate(subscriptions: any[], vscode) {
+    public activate(subscriptions: any[], vscode = this.vscode) {
         this.extension.activate(this, subscriptions, vscode, this.linter);
 
         // Lint all open elixir documents
@@ -44,7 +47,7 @@ export default class ElixirLintingProvider {
     }
 
     // getDiagnosis for vscode.diagnostics
-    public getDiagnosis(item, vscode): any {
+    public getDiagnosis(item, vscode= this.vscode): any {
         const range = new vscode.Range(
             item.endColumn,
             item.endLine,
@@ -52,7 +55,8 @@ export default class ElixirLintingProvider {
             item.startLine,
         );
         const itemSeverity = severity.parse(item.check, vscode);
-        return new vscode.Diagnostic(range, item.message, itemSeverity);
+        const message = `${item.message} [${item.check}:${itemSeverity}]`;
+        return new vscode.Diagnostic(range, message, itemSeverity);
     }
 
     public makeZeroIndex = (value: number): number => {
@@ -100,7 +104,7 @@ export default class ElixirLintingProvider {
      * which add the chrome in the UI.
      */
 
-    private linter(textDocument: any, index, vscode) {
+    private linter(textDocument: any, index, vscode = this.vscode) {
         if (textDocument.languageId !== "elixir") {
             return;
         }

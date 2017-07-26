@@ -29,10 +29,10 @@ describe("severity", () => {
 
     it("should return expected severity", () => {
       [
-        {check: "C", expected: 2},
-        {check: "R", expected: 2},
-        {check: "F", expected: 3},
-        {check: "D", expected: 3},
+        {check: "C", expected: 1},
+        {check: "R", expected: 1},
+        {check: "F", expected: 1},
+        {check: "D", expected: 1},
         {check: "W", expected: 1},
       ].forEach((t) => {
         const result = severity.parse(t.check, vscodeMock);

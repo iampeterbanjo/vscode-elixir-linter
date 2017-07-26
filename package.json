@@ -47,22 +47,22 @@
         },
         "elixirLinter.consistencySeverity": {
           "type": "number",
-          "default": 2,
+          "default": 1,
           "description": "Lint consistency error severity"
         },
         "elixirLinter.designSeverity": {
           "type": "number",
-          "default": 3,
+          "default": 1,
           "description": "Lint design error severity"
         },
         "elixirLinter.refactoringSeverity": {
           "type": "number",
-          "default": 3,
+          "default": 1,
           "description": "Lint refactoring error severity"
         },
         "elixirLinter.readabilitySeverity": {
           "type": "number",
-          "default": 2,
+          "default": 1,
           "description": "Lint readability error severity"
         },
         "elixirLinter.warningsSeverity": {

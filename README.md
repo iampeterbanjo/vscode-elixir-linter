@@ -9,7 +9,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 * Error warning indicator under text
 * Tooltips with lint message
 
-![feature tooltips](images/elixirlinter-screenshot-tooltips.png)
+![feature tooltips](images/elixirlinter-lint-tooltip.png)
 
 ## Requirements
 
@@ -18,6 +18,29 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 ## Extension Settings
 
 - `"elixirLinter.useStrict": [true | false]`
+- `"elixirLinter.defaultSeverity": [number]`
+- `"elixirLinter.consistencySeverity": [number]`
+- `"elixirLinter.designSeverity": [number]`
+- `"elixirLinter.refactoringSeverity": [number]`
+- `"elixirLinter.readabilitySeverity": [number]`
+- `"elixirLinter.warningsSeverity": [number]`
+
+### Linting
+![show errors and warnings](images/elixirlinter-show-errors-warnings-list.png)
+Lint messages appear in the format "Message [Category:Severity level]"
+
+### Severity levels (settings.json)
+* 1 = Warning (default). These appear underlined and in errors and warnings list.
+* 2 = Information. These appear underlined and in errors and warnings list.
+* 3 = Hint. These appear in errors and warnings list only.
+
+### Categories
+* Consistency [C]
+* Readability [R]
+* Refactoring Opportunities [F]
+* Software Design [D]
+* Warnings [W]
+
 ## [Changelog](CHANGELOG.md)
 
 ## [Contributing](CONTRIBUTING.md)
