@@ -20,3 +20,7 @@ To contribute code please use pull requests by following this guide:
 - In **your commit message** please [mention](https://github.com/blog/957-introducing-issue-mentions) the issue number using `#issue-number`: for example, `add setting to enable strict linting. fixes #6`.
 - **Push the new branch** to Github and open a pull request (PR) for the next release. If a unreleased branch is not open, one will be created for you. All PRs must pass all current tests and it would be preferred if new PRs included new tests or updates.
 
+## Test environment
+
+[Extension integration tests](https://code.visualstudio.com/docs/extensions/testing-extensions#_running-tests-automatically-on-travis-ci-build-machines) depend on XVFB. Please see [xvfb.sh](./bin/xvfb.sh) for  installation notes.
+
