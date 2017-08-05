@@ -49,10 +49,10 @@ export default class ElixirLintingProvider {
     // getDiagnosis for vscode.diagnostics
     public getDiagnosis(item, vscode= this.vscode): any {
         const range = new vscode.Range(
-            item.endColumn,
-            item.endLine,
-            item.startColumn,
             item.startLine,
+            item.startColumn,
+            item.endLine,
+            item.endColumn,
         );
         const itemSeverity = severity.parse(item.check, vscode);
         const message = `${item.message} [${item.check}:${itemSeverity}]`;
