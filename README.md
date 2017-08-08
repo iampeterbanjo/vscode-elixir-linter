@@ -8,6 +8,7 @@ Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo)
 
 * Error warning indicator under text
 * Tooltips with lint message
+* Configurable lint severity levels
 
 ![feature tooltips](images/elixirlinter-lint-tooltip.png)
 
@@ -55,6 +56,4 @@ Lint messages appear in the format "Message [Category:Severity level]"
 * [yeoman](http://yeoman.io/)
 * [vscode-extension-tutorial](https://github.com/hoovercj/vscode-extension-tutorial)
 
-## Authors
-* [iampeterbanjo](https://github.com/iampeterbanjo)
-* [piersadrian](https://github.com/piersadrian)
+## [Authors](AUTHORS.md)

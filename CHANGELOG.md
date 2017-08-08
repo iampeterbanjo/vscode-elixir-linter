@@ -3,6 +3,8 @@ All notable changes to the "elixirlinter" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.4.1
+- Fix line highlighting error
 ## 0.4.0
 - Configurable severity levels for linting
 ## 0.3.1
