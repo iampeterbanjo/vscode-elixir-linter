@@ -2,7 +2,7 @@
   "name": "elixirlinter",
   "displayName": "ElixirLinter",
   "description": "Elixir linter using Credo",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "iampeterbanjo",
   "engines": {
     "vscode": "^1.0.0",
