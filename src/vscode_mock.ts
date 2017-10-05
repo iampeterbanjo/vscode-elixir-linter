@@ -1,3 +1,4 @@
+import * as sinon from "sinon";
 interface IDiagnosticCollection {
   clear: () => {};
   delete: () => {};
@@ -64,4 +65,30 @@ export const textDocument = {
   },
   languageId: "elixir",
   uri: "/path/to/file",
+};
+
+export const getMockSettings = (settings) => {
+  return sinon.stub(workspace, "getConfiguration").callsFake(() => {
+    return Object.assign({
+      useStrict: false,
+    }, settings);
+  });
+};
+
+export const getMockConfiguration = (config?) => {
+  const consistencyError = 10;
+  const readabilityError = 11;
+  const refactoringError = 12;
+  const designError = 14;
+  const warningsError = 15;
+
+  return sinon.stub(workspace, "getConfiguration").callsFake(() => {
+    return Object.assign({
+      consistencySeverity: consistencyError,
+      designSeverity: designError,
+      readabilitySeverity: readabilityError,
+      refactoringSeverity: refactoringError,
+      warningsSeverity: warningsError,
+    }, config);
+  });
 };

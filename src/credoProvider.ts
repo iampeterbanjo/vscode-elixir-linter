@@ -97,6 +97,16 @@ export default class ElixirLintingProvider {
         });
     }
 
+    public getLinterArguments(): string[] {
+        const settings = this.vscode.workspace.getConfiguration("elixirLinter");
+        let args = ["credo", "list", "--format=oneline", "--read-from-stdin"];
+
+        if (settings.useStrict === true) {
+            args = args.concat("--strict");
+        }
+        return args;
+    }
+
     /**
      * Using cp.spawn(), extensions can call any executable and process the results.
      * The code below uses cp.spawn() to call linter, parses the output into Diagnostic objects
@@ -111,13 +121,7 @@ export default class ElixirLintingProvider {
 
         let decoded = "";
         const diagnostics: any[] = [];
-
-        let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
-
-        const settings = vscode.workspace.getConfiguration("elixirLinter");
-        if (settings.useStrict === true) {
-            args = args.concat("--strict");
-        }
+        const args = this.getLinterArguments();
 
         // use stdin for credo to prevent running on entire project
         const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
@@ -133,7 +137,6 @@ export default class ElixirLintingProvider {
                     if (item) {
                         diagnostics.push(this.getDiagnosis(item, vscode));
                     }
-
                 });
                 this.diagnosticCollection.set(textDocument.uri, diagnostics);
             });

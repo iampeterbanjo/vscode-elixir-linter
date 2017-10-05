@@ -1,8 +1,6 @@
 import * as assert from "assert";
 import * as sinon from "sinon";
-
 import * as severity from "../src/severity";
-
 import * as vscodeMock from "./vscode_mock";
 
 describe("severity", () => {
@@ -15,16 +13,14 @@ describe("severity", () => {
 
     it("should return `defaultSeverity` setting by default if set", () => {
       const testSeverity = 42;
-      const mockSettings = sinon.stub(vscodeMock.workspace, "getConfiguration").callsFake(() => {
-        return {
-          defaultSeverity: testSeverity,
-        };
+      const mockConfig = vscodeMock.getMockConfiguration({
+        defaultSeverity: testSeverity,
       });
 
       const result = severity.parse("WHAT", vscodeMock);
       assert.equal(result, testSeverity);
 
-      mockSettings.restore();
+      mockConfig.restore();
     });
 
     it("should return expected severity", () => {
@@ -48,15 +44,7 @@ describe("severity", () => {
       const designError = 14;
       const warningsError = 15;
 
-      const mockSettings = sinon.stub(vscodeMock.workspace, "getConfiguration").callsFake(() => {
-          return {
-            consistencySeverity: consistencyError,
-            designSeverity: designError,
-            readabilitySeverity: readabilityError,
-            refactoringSeverity: refactoringError,
-            warningsSeverity: warningsError,
-          };
-        });
+      const mockConfig = vscodeMock.getMockConfiguration();
 
       [
         {check: "C", expected: consistencyError},
@@ -70,7 +58,7 @@ describe("severity", () => {
         assert.equal(result, t.expected);
       });
 
-      mockSettings.restore();
+      mockConfig.restore();
     });
   });
 });

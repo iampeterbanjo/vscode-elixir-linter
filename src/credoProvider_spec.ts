@@ -1,9 +1,7 @@
 import * as assert from "assert";
-
+import * as sinon from "sinon";
 import CredoProvider from "../src/credoProvider";
-
 import * as fixtures from "../test/fixtures";
-
 import * as vscodeMock from "./vscode_mock";
 
 describe("CredoProvider", () => {
@@ -115,6 +113,62 @@ describe("CredoProvider", () => {
       ].forEach((t) => {
         assert.equal(credo.makeZeroIndex(t.value), t.expected);
       });
+    });
+  });
+
+  describe(".getLinterArguments", () => {
+    it("should contain 'credo' at 0", () => {
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args[0] === "credo");
+    });
+
+    it("should contain 'list' at 1", () => {
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args[1] === "list");
+    });
+
+    it("should contain '--format=oneline' at 2", () => {
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args[2] === "--format=oneline");
+    });
+
+    it("should contain '--read-from-stdin' at 3", () => {
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args[3] === "--read-from-stdin");
+    });
+
+    it("should NOT contain --strict when settings.useStrict is 'false'", () => {
+      const mockSettings = vscodeMock.getMockSettings({
+        useStrict: false,
+      });
+
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args.indexOf("--strict") === -1);
+
+      mockSettings.restore();
+    });
+
+    it("should add --strict when settings.useStrict is 'true'", () => {
+      const mockSettings = vscodeMock.getMockSettings({
+        useStrict: true,
+      });
+
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args.indexOf("--strict") > -1);
+
+      mockSettings.restore();
     });
   });
 });
