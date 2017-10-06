@@ -67,14 +67,6 @@ export const textDocument = {
   uri: "/path/to/file",
 };
 
-export const getMockSettings = (settings) => {
-  return sinon.stub(workspace, "getConfiguration").callsFake(() => {
-    return Object.assign({
-      useStrict: false,
-    }, settings);
-  });
-};
-
 export const getMockConfiguration = (config?) => {
   const consistencyError = 10;
   const readabilityError = 11;
@@ -88,6 +80,7 @@ export const getMockConfiguration = (config?) => {
       designSeverity: designError,
       readabilitySeverity: readabilityError,
       refactoringSeverity: refactoringError,
+      useStrict: false,
       warningsSeverity: warningsError,
     }, config);
   });

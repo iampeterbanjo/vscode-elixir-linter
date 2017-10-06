@@ -146,7 +146,7 @@ describe("CredoProvider", () => {
     });
 
     it("should NOT contain --strict when settings.useStrict is 'false'", () => {
-      const mockSettings = vscodeMock.getMockSettings({
+      const mockSettings = vscodeMock.getMockConfiguration({
         useStrict: false,
       });
 
@@ -159,7 +159,7 @@ describe("CredoProvider", () => {
     });
 
     it("should add --strict when settings.useStrict is 'true'", () => {
-      const mockSettings = vscodeMock.getMockSettings({
+      const mockSettings = vscodeMock.getMockConfiguration({
         useStrict: true,
       });
 
@@ -167,6 +167,32 @@ describe("CredoProvider", () => {
       const args = credo.getLinterArguments();
 
       assert.ok(args.indexOf("--strict") > -1);
+
+      mockSettings.restore();
+    });
+
+    it("should add -C when settings.execName exists", () => {
+      const mockSettings = vscodeMock.getMockConfiguration({
+        execName: "",
+      });
+
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.ok(args.indexOf("-C") > -1, `args is ${args}`);
+
+      mockSettings.restore();
+    });
+
+    it("should have settings.execName value after '-C' when it exists", () => {
+      const mockSettings = vscodeMock.getMockConfiguration({
+        execName: "swish",
+      });
+
+      const credo = new CredoProvider(vscodeMock);
+      const args = credo.getLinterArguments();
+
+      assert.equal(args[args.indexOf("-C") + 1], "swish");
 
       mockSettings.restore();
     });

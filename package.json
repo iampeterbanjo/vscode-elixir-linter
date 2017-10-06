@@ -69,6 +69,11 @@
           "type": "number",
           "default": 1,
           "description": "Lint warnings error severity"
+        },
+        "elixirLinter.execName": {
+          "type": "string",
+          "default": "default",
+          "description": "Name of exec in .credo.exs configs to run"
         }
       }
     }

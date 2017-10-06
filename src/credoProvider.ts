@@ -104,6 +104,9 @@ export default class ElixirLintingProvider {
         if (settings.useStrict === true) {
             args = args.concat("--strict");
         }
+        if (settings.execName !== null) {
+            args = args.concat(["-C", settings.execName]);
+        }
         return args;
     }
 
