@@ -97,6 +97,12 @@ export default class ElixirLintingProvider {
         });
     }
 
+    public parseInfoOutput(output): string[] {
+        const json = parse.getLines(output).join("\n");
+        const info = JSON.parse(json);
+        return info.config ? info.config.files : [];
+    }
+
     /**
      * Using cp.spawn(), extensions can call any executable and process the results.
      * The code below uses cp.spawn() to call linter, parses the output into Diagnostic objects
@@ -109,34 +115,62 @@ export default class ElixirLintingProvider {
             return;
         }
 
+        this.getLintedFiles(vscode, (files) => {
+          if (files.indexOf(textDocument.fileName) === -1) {
+            return;
+          }
+
+          let decoded = "";
+          const diagnostics: any[] = [];
+
+          let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
+
+          const settings = vscode.workspace.getConfiguration("elixirLinter");
+          if (settings.useStrict === true) {
+              args = args.concat("--strict");
+          }
+
+          // use stdin for credo to prevent running on entire project
+          const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
+          childProcess.stdin.write(textDocument.getText());
+          childProcess.stdin.end();
+
+          if (childProcess.pid) {
+              childProcess.stdout.on("data", (data: Buffer) => {
+                  decoded += data;
+              });
+              childProcess.stdout.on("end", () => {
+                  this.parseOutput(decoded).forEach( (item) => {
+                      if (item) {
+                          diagnostics.push(this.getDiagnosis(item, vscode));
+                      }
+
+                  });
+                  this.diagnosticCollection.set(textDocument.uri, diagnostics);
+              });
+          }
+        });
+
+    }
+
+    private getLintedFiles(vscode = this.vscode, callback: (files: string[]) => void) {
         let decoded = "";
-        const diagnostics: any[] = [];
+        const args =  ["credo", "info", "--verbose", "--format=json"];
 
-        let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
-
-        const settings = vscode.workspace.getConfiguration("elixirLinter");
-        if (settings.useStrict === true) {
-            args = args.concat("--strict");
-        }
-
-        // use stdin for credo to prevent running on entire project
         const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
-        childProcess.stdin.write(textDocument.getText());
-        childProcess.stdin.end();
 
         if (childProcess.pid) {
             childProcess.stdout.on("data", (data: Buffer) => {
                 decoded += data;
             });
             childProcess.stdout.on("end", () => {
-                this.parseOutput(decoded).forEach( (item) => {
-                    if (item) {
-                        diagnostics.push(this.getDiagnosis(item, vscode));
-                    }
-
+                const files = this.parseInfoOutput(decoded).map((item) => {
+                  return path.join(vscode.workspace.rootPath, item);
                 });
-                this.diagnosticCollection.set(textDocument.uri, diagnostics);
+                callback(files);
             });
+        } else {
+          callback([]);
         }
     }
 }
