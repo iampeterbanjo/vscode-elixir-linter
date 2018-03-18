@@ -2,6 +2,8 @@
 
 import * as cp from "child_process";
 import * as path from "path";
+import * as execa from "execa";
+import * as getStream from "get-stream";
 
 import * as cmd from "./command";
 import * as parse from "./parse";
@@ -121,8 +123,6 @@ export default class ElixirLintingProvider {
           }
 
           let decoded = "";
-          const diagnostics: any[] = [];
-
           let args =  ["credo", "list", "--format=oneline", "--read-from-stdin"];
 
           const settings = vscode.workspace.getConfiguration("elixirLinter");
@@ -131,44 +131,51 @@ export default class ElixirLintingProvider {
           }
 
           // use stdin for credo to prevent running on entire project
-          const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
-          childProcess.stdin.write(textDocument.getText());
-          childProcess.stdin.end();
+          const stream = execa(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode)).stdout;
 
-          if (childProcess.pid) {
-              childProcess.stdout.on("data", (data: Buffer) => {
-                  decoded += data;
-              });
-              childProcess.stdout.on("end", () => {
-                  this.parseOutput(decoded).forEach( (item) => {
-                      if (item) {
-                          diagnostics.push(this.getDiagnosis(item, vscode));
-                      }
+          stream.pipe(textDocument.getText());
+          getStream(stream)
+            .then(stdout => this.handleFileDiagnosisOutput(stdout, textDocument, vscode))
+            .catch(error => console.warn(`Elixir linter error: ${error}`));
 
-                  });
-                  this.diagnosticCollection.set(textDocument.uri, diagnostics);
-              });
-          }
+        //   if (childProcess.pid) {
+        //       childProcess.stdout.on("data", (data: Buffer) => {
+        //           decoded += data;
+        //       });
+        //       childProcess.stdout.on("end", () => this.handleFileDiagnosisOutput(decoded, textDocument, vscode));
+        //   }
         });
+    }
 
+    private handleFileDiagnosisOutput(decoded, textDocument, vscode) {
+        const diagnostics: any[] = [];
+
+        this.parseOutput(decoded).forEach( (item) => {
+            if (item) {
+                diagnostics.push(this.getDiagnosis(item, vscode));
+            }
+        });
+        this.diagnosticCollection.set(textDocument.uri, diagnostics);
+    }
+
+    private handleCredoFileOutput(decoded, callback, vscode) {
+        const files = this.parseInfoOutput(decoded).map((item) => {
+            return path.join(vscode.workspace.rootPath, item);
+        });
+        callback(files);
     }
 
     private getLintedFiles(vscode = this.vscode, callback: (files: string[]) => void) {
         let decoded = "";
         const args =  ["credo", "info", "--verbose", "--format=json"];
 
-        const childProcess = cp.spawn(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode));
+        const childProcess = execa.stdout(ElixirLintingProvider.linterCommand, args, cmd.getOptions(vscode)).then((stdout) => this.handleCredoFileOutput(stdout, callback, vscode));
 
         if (childProcess.pid) {
             childProcess.stdout.on("data", (data: Buffer) => {
                 decoded += data;
             });
-            childProcess.stdout.on("end", () => {
-                const files = this.parseInfoOutput(decoded).map((item) => {
-                  return path.join(vscode.workspace.rootPath, item);
-                });
-                callback(files);
-            });
+            childProcess.stdout.on("end", () => this.handleCredoFileOutput(decoded, callback, vscode));
         } else {
           callback([]);
         }
