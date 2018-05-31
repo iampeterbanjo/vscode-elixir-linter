@@ -2047,9 +2047,9 @@ package-json@^4.0.0:
     registry-url "^3.0.3"
     semver "^5.1.0"
 
-parallelshell@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/parallelshell/-/parallelshell-2.0.0.tgz#c94af5d6348526a26da9020faeb5fc724a80600c"
+parallelshell@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/parallelshell/-/parallelshell-3.0.2.tgz#fffc55aaa145bdd44b5381cf7fd5e521fc21aa7b"
 
 parse-glob@^3.0.4:
   version "3.0.4"
