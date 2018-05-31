@@ -74,7 +74,7 @@
     }
   },
   "scripts": {
-    "clean": "test -d out/ && rm -r out/ || exit 0",
+    "clean": "rm -r out/; rm -rf node_modules; rm *.log package-lock.json yarn.lock || exit 0",
     "compile": "tsc -watch -p ./",
     "lint": "npm run lint:src && npm run lint:test",
     "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
