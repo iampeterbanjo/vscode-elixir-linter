@@ -88,13 +88,13 @@
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.40",
+    "@types/node": "^10.1.0",
     "assert": "^1.4.1",
     "mocha": "^5.1.1",
     "nodemon": "^1.11.0",
     "sinon": "^2.1.0",
     "tslint": "^5.2.0",
-    "typescript": "^2.0.3",
+    "typescript": "^2.8.3",
     "vscode": "^1.0.0"
   },
   "dependencies": {
