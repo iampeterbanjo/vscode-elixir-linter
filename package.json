@@ -74,7 +74,7 @@
     }
   },
   "scripts": {
-    "clean": "test -d out/ && rm -r out/ || exit 0",
+    "clean": "rm -r out/; rm -rf node_modules; rm *.log package-lock.json yarn.lock || exit 0",
     "compile": "tsc -watch -p ./",
     "lint": "npm run lint:src && npm run lint:test",
     "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
@@ -88,18 +88,18 @@
   },
   "devDependencies": {
     "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.40",
+    "@types/node": "^10.1.0",
     "assert": "^1.4.1",
-    "mocha": "^3.2.0",
-    "nodemon": "^1.17.4",
-    "sinon": "^2.1.0",
+    "mocha": "^5.1.1",
+    "nodemon": "^1.11.0",
+    "sinon": "^5.0.7",
     "tslint": "^5.2.0",
-    "typescript": "^2.0.3",
+    "typescript": "^2.8.3",
     "vscode": "^1.0.0"
   },
   "dependencies": {
     "global": "^4.3.1",
-    "parallelshell": "^2.0.0",
+    "parallelshell": "^3.0.2",
     "yarn": "^0.20.3"
   },
   "license": "MIT",
