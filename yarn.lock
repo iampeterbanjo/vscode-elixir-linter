@@ -1687,7 +1687,7 @@ node.extend@^1.1.2:
   dependencies:
     is "^3.1.0"
 
-nodemon@^1.11.0:
+nodemon@^1.17.5:
   version "1.17.5"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-1.17.5.tgz#e6a665c872fdf09d48bf2a81f3e85f8cfb39322a"
   dependencies:
