@@ -99,7 +99,7 @@
   "dependencies": {
     "global": "^4.3.1",
     "parallelshell": "^3.0.2",
-    "yarn": "^1.6.0"
+    "yarn": "^1.7.0"
   },
   "license": "MIT",
   "repository": {
