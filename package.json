@@ -5,7 +5,7 @@
   "version": "0.4.1",
   "publisher": "iampeterbanjo",
   "engines": {
-    "vscode": "^1.0.0",
+    "vscode": "^1.2.0",
     "node": ">=6.10.0"
   },
   "categories": [
@@ -74,33 +74,32 @@
     }
   },
   "scripts": {
-    "clean": "test -d out/ && rm -r out/ || exit 0",
+    "clean": "rm -r out/; rm -rf node_modules; rm *.log package-lock.json yarn.lock || exit 0",
     "compile": "tsc -watch -p ./",
     "lint": "npm run lint:src && npm run lint:test",
     "lint:src": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:test": "tslint -c tslint.json 'test/**/*.ts' -e test/index.ts",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "pretest": "npm run clean",
     "test": "npm run lint --silent && npm run test:typescript --silent",
     "test:typescript": "tsc && mocha 'out/src/*_spec.js'",
     "test:watch": "nodemon -e 'ts' -x 'npm run test'",
     "vscode:prepublish": "tsc -p ./"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.32",
+    "@types/mocha": "^5.2.1",
     "@types/node": "^10.3.0",
     "assert": "^1.4.1",
-    "mocha": "^3.2.0",
-    "nodemon": "^1.11.0",
-    "sinon": "^2.1.0",
-    "tslint": "^5.2.0",
-    "typescript": "^2.0.3",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.17.5",
+    "sinon": "^5.0.7",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3",
     "vscode": "^1.0.0"
   },
   "dependencies": {
     "global": "^4.3.1",
-    "parallelshell": "^2.0.0",
-    "yarn": "^0.20.3"
+    "parallelshell": "^3.0.2",
+    "yarn": "^1.6.0"
   },
   "license": "MIT",
   "repository": {
