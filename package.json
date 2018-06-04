@@ -87,7 +87,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.1",
-    "@types/node": "^10.1.0",
+    "@types/node": "^10.3.0",
     "assert": "^1.4.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
