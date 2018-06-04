@@ -89,7 +89,7 @@
     "@types/mocha": "^5.2.1",
     "@types/node": "^10.1.0",
     "assert": "^1.4.1",
-    "mocha": "^5.1.1",
+    "mocha": "^5.2.0",
     "nodemon": "^1.11.0",
     "tslint": "^5.10.0",
     "sinon": "^5.0.7",
