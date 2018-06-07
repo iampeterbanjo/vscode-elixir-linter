@@ -91,7 +91,7 @@
     "assert": "^1.4.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
-    "sinon": "^5.0.7",
+    "sinon": "^5.1.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.1",
     "vscode": "^1.0.0"
