@@ -1,3 +1,7 @@
+# NO LONGER MAINTAINED
+
+I have not worked in Elixir for a while so I haven't continued to develop this extension. If you would like to fork this project, please go ahead, and let me know if you need help.
+
 # Elixirlinter
 
 Provides linting for Elixir files using [Credo](https://github.com/rrrene/credo) for [Visual Studio Code](https://code.visualstudio.com/)
